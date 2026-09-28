@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>接口并发测试工具 · 综合版</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        * { box-sizing:border-box; margin:0; padding:0; font-family:system-ui,-apple-system,sans-serif; }
+        body { background:#f3f4f6; padding:12px; max-width:900px; margin:0 auto; }
+        header { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+        header h1 { font-size:21px; }
+        header .sub { color:#777; font-size:12px; }
+        .pill { background:#10b981; color:#fff; padding:4px 12px; border-radius:999px; font-size:12px; }
+        .tip { background:#fffbeb; border:1px solid #fcd34d; color:#92400e; padding:10px; border-radius:8px; margin-bottom:12px; line-height:1.6; }
+        .card { background:#fff; border-radius:12px; padding:16px; margin-bottom:12px; }
+        h3 { margin-bottom:10px; font-size:15px; display:flex; align-items:center; gap:8px; }
+        .tag { background:#eef2ff; color:#2563eb; font-size:11px; padding:2px 8px; border-radius:6px; }
+        label { font-size:12px; color:#555; display:block; margin-bottom:4px; }
+        textarea, input { width:100%; border:1px solid #d1d5db; border-radius:8px; padding:9px 10px; font-size:13px; }
+        textarea { min-height:90px; resize:vertical; }
+        .grid { display:grid; gap:12px; }
+        .g2 { grid-template-columns:1fr 1fr; }
+        .g4 { grid-template-columns:repeat(4,1fr); }
+        .g3 { grid-template-columns:1fr 1fr 1fr; }
+        .btn { padding:12px; border:none; border-radius:8px; font-size:15px; margin:5px 0; cursor:pointer; }
+        .btn-p { background:#2563eb; color:#fff; }
+        .btn-d { background:#dc2626; color:#fff; }
+        .btn-n { background:#e5e7eb; color:#111; }
+        .row { display:flex; gap:8px; flex-wrap:wrap; }
+        .col { flex:1; }
+        .method-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+        .m-btn { flex:1; min-width:60px; padding:8px 0; border:1px solid #d4d7de; border-radius:8px; text-align:center; font-size:13px; cursor:pointer; background:#fff; color:#444; }
+        .m-btn.active { background:#2563eb; border-color:#2563eb; color:#fff; }
+        .seg { display:flex; background:#f0f1f4; border-radius:8px; overflow:hidden; margin-bottom:8px; }
+        .seg button { flex:1; padding:8px; border:none; background:transparent; font-size:13px; cursor:pointer; color:#666; }
+        .seg button.active { background:#2563eb; color:#fff; }
+        .hidden { display:none; }
+        .chart { width:100%; height:220px; }
+        .charts { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .cbox { background:#fff; border-radius:12px; padding:12px; margin-bottom:10px; }
+        .cbox h4 { font-size:12px; color:#555; margin-bottom:6px; }
+        .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:10px 0; }
+        .stat { background:#f8fafc; border:1px solid #eceef2; border-radius:10px; padding:10px; text-align:center; }
+        .stat .num { font-size:18px; font-weight:700; color:#2563eb; }
+        .stat .lbl { font-size:11px; color:#777; margin-top:2px; }
+        .filter-tab { display:flex; gap:6px; margin-bottom:8px; }
+        .filter-tab button { padding:5px 12px; border:1px solid #d4d7de; border-radius:999px; background:#fff; font-size:12px; cursor:pointer; color:#555; }
+        .filter-tab button.active { background:#2563eb; color:#fff; border-color:#2563eb; }
+        .search-wrap { display:flex; gap:6px; margin-bottom:8px; }
+        .search-wrap input { flex:1; }
+        .tbl { width:100%; border-collapse:collapse; font-size:12px; }
+        .tbl th, .tbl td { border:1px solid #eceef2; padding:6px 7px; text-align:left; white-space:nowrap; }
+        .tbl th { background:#f8fafc; color:#555; }
+        .tbl-wrap { max-height:260px; overflow:auto; }
+        .badge { display:inline-block; padding:1px 8px; border-radius:6px; font-size:11px; }
+        .b-ok { background:#dcfce7; color:#166534; }
+        .b-fail { background:#fee2e2; color:#991b1b; }
+        .resp-box { border:1px solid #eceef2; border-radius:8px; margin:6px 0; overflow:hidden; }
+        .resp-head { background:#f8fafc; padding:6px 10px; font-size:12px; color:#555; display:flex; justify-content:space-between; }
+        .resp-body { max-height:200px; overflow:auto; padding:8px 10px; font-size:12px; white-space:pre-wrap; word-break:break-all; background:#fafcff; }
+        @media (max-width:640px){ .g4,.g2,.g3,.charts,.stats { grid-template-columns:1fr 1fr; } }
+    </style>
+</head>
+<body>
+<header>
+    <div><h1>接口并发测试工具 · 综合版</h1><div class="sub">Load &amp; Concurrency Test Console</div></div>
+    <span class="pill" id="statusPill">就绪</span>
+</header>
+
+<div class="tip">
+⚠️ 浏览器 CORS 跨域限制，网页内直接请求可能报错；真实压测请复制生成的 Shell 脚本到 Termux/终端执行。<br>
+<b>仅限调试本人拥有权限的接口，严禁对第三方接口压测、攻击，违规后果自行承担。</b>
+</div>
+
+<div class="card">
+    <h3><span class="tag">Stars</span> 请求配置</h3>
+    <div class="method-row" id="methodRow">
+        <div class="m-btn active" data-m="GET">GET</div><div class="m-btn" data-m="POST">POST</div>
+        <div class="m-btn" data-m="PUT">PUT</div><div class="m-btn" data-m="DELETE">DELETE</div>
+        <div class="m-btn" data-m="PATCH">PATCH</div><div class="m-btn" data-m="HEAD">HEAD</div>
+    </div>
+    <div class="grid" style="margin-bottom:12px;">
+        <div><label>目标 URL</label><input id="url" value="https://httpbin.org/post" placeholder="https://api.example.com/v1/users"></div>
+    </div>
+    <div class="grid g2" style="margin-bottom:12px;">
+        <div>
+            <label>请求头 Headers（每行 名称:值）</label>
+            <textarea id="headers" placeholder="Content-Type: application/json&#10;Authorization: Bearer xxx"></textarea>
+        </div>
+        <div>
+            <label>请求体 Body</label>
+            <textarea id="body" placeholder='{"name":"test","count":1}'></textarea>
+            <div class="seg" style="margin-top:8px;">
+                <button data-body="none">无</button><button data-body="json" class="active">JSON</button>
+                <button data-body="text">纯文本</button><button data-body="form">表单</button>
+            </div>
+        </div>
+    </div>
+    <div class="grid g4">
+        <div><label>超时 (ms)</label><input type="number" id="timeout" value="10000" min="1"></div>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag">Stars</span> 压测配置</h3>
+    <div class="grid g4" style="margin-bottom:12px;">
+        <div><label>并发线程数</label><input type="number" id="threads" value="20" min="1"></div>
+        <div><label>每线程迭代</label><input type="number" id="iterations" value="10" min="1"></div>
+        <div><label>Ramp-up 爬坡 (秒)</label><input type="number" id="rampup" value="0" min="0"></div>
+        <div><label>Think 间隔 (ms)</label><input type="number" id="think" value="0" min="0"></div>
+    </div>
+    <div class="grid g2" style="margin-bottom:10px;">
+        <div class="seg">
+            <button data-mode="iters" class="active">按迭代数</button>
+            <button data-mode="duration">按持续时间</button>
+        </div>
+        <div class="seg">
+            <button data-type="real">真实请求</button>
+            <button data-type="demo" class="active">演示模拟</button>
+        </div>
+    </div>
+    <div class="grid g2 hidden" id="durationBox" style="margin-bottom:10px;">
+        <div><label>持续时间 (秒)</label><input type="number" id="duration" value="30" min="1"></div>
+    </div>
+    <div class="tip" style="margin:0;">真实请求通过浏览器 <b>fetch</b> 发出，目标接口需允许跨域（CORS）；演示模拟不发起网络请求，用于离线体验完整压测流程。</div>
+</div>
+
+<div class="card">
+    <h3><span class="tag">Stars</span> 定时执行任务</h3>
+    <div class="grid g3" style="margin-bottom:10px;">
+        <div>
+            <label>每隔 N 秒执行一轮</label>
+            <input type="number" id="intervalSec" value="10" min="1">
+        </div>
+        <div class="col" style="display:flex;align-items:flex-end;gap:6px;">
+            <button class="btn btn-p" id="btnSched" style="flex:1;margin:0;" onclick="toggleSched()">开启定时</button>
+            <button class="btn btn-d" id="btnSchedStop" style="flex:1;margin:0;" onclick="stopSched()">停止定时</button>
+        </div>
+    </div>
+    <div class="tip" style="margin:0;">
+        开启后工具会按设定的间隔自动重复执行压测；每轮执行完（迭代结束或时长达到）自动记录并汇总，下方图表与表格可视化每一轮的 QPS、成功数、失败数与平均响应时间。手动点击「停止」会中止当前轮并暂停后续调度。
+    </div>
+    <div class="tbl-wrap" style="margin-top:10px;">
+        <table class="tbl">
+            <thead><tr><th>轮次</th><th>总请求</th><th>成功</th><th>失败</th><th>QPS</th><th>平均响应</th><th>完成时间</th></tr></thead>
+            <tbody id="roundBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <div class="row">
+        <div class="col"><button class="btn btn-p" style="margin:0;" onclick="startPress()">▶ 开始压测</button></div>
+        <div class="col"><button class="btn btn-d" style="margin:0;" onclick="stopPress()">⏹ 停止</button></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin:10px 0;">
+        <span id="timerTxt" style="font-size:13px;color:#555;">等待开始 00:00</span>
+        <span id="elapsedTxt" style="font-size:13px;color:#888;">已运行 0s</span>
+    </div>
+    <div class="stats">
+        <div class="stat"><div class="num" id="stTotal"># 0</div><div class="lbl">总请求数</div></div>
+        <div class="stat"><div class="num" id="stOk" style="color:#10b981;"># 0</div><div class="lbl">成功</div></div>
+        <div class="stat"><div class="num" id="stFail" style="color:#dc2626;"># 0</div><div class="lbl">失败</div></div>
+        <div class="stat"><div class="num" id="stQps"># 0</div><div class="lbl">QPS</div></div>
+        <div class="stat"><div class="num" id="stAvg" style="font-size:15px;">--</div><div class="lbl">平均响应</div></div>
+        <div class="stat"><div class="num" id="stP95" style="font-size:15px;">--</div><div class="lbl">P95</div></div>
+    </div>
+</div>
+
+<div class="cbox"><h3><span class="tag">Stars</span> QPS / 吞吐 趋势</h3><div class="chart" id="chartQps"></div></div>
+<div class="charts">
+    <div class="cbox"><h4>Stars 平均响应时间趋势</h4><div class="chart" id="chartRt"></div></div>
+    <div class="cbox"><h4>Stars 响应时间分布</h4><div class="chart" id="chartHist"></div></div>
+    <div class="cbox"><h4>Stars 状态码分布</h4><div class="chart" id="chartStatus"></div></div>
+    <div class="cbox"><h4>Stars 响应时间百分位</h4><div class="chart" id="chartPercentile"></div></div>
+</div>
+
+<div class="card">
+    <h3><span class="tag">Stars</span> 响应返回数据可视化</h3>
+    <div id="fieldWrap" style="margin-bottom:8px;">
+        <label>数值字段</label>
+        <select id="fieldSelect" style="margin-bottom:6px;"><option value="">暂无响应数据</option></select>
+    </div>
+    <div class="chart" id="chartField" style="height:200px;"></div>
+    <div class="tip" style="margin-top:6px;">自动识别成功响应中的 JSON 数值字段并绘制其随请求的变化趋势；在下方「请求日志」中点击任意一行可查看该请求返回的完整响应体。</div>
+</div>
+
+<div class="card">
+    <h3><span class="tag">Stars</span> 请求日志</h3>
+    <div class="filter-tab">
+        <button data-filter="all" class="active">全部</button>
+        <button data-filter="ok">成功</button>
+        <button data-filter="fail">失败</button>
+    </div>
+    <div class="search-wrap">
+        <input id="logSearch" placeholder="搜索 方法 / URL / 状态码 / 耗时 / 响应内容…" oninput="renderLog()">
+    </div>
+    <div class="tbl-wrap">
+        <table class="tbl">
+            <thead><tr><th>#</th><th>方法</th><th>URL</th><th>状态码</th><th>耗时</th><th>大小</th><th>时间</th><th>线程</th><th>响应</th></tr></thead>
+            <tbody id="logBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag">Stars</span> 说明</h3>
+    <div class="tip" style="margin:0;">
+        并发线程在浏览器内以异步协程调度实现，数值逼近真实压测但受单进程事件循环限制；「真实请求」依赖目标接口的 CORS 配置，跨域被拒绝会记为失败。「演示模拟」不产生网络流量，仅用于演示与教学。<br>
+        ⚠️ 仅对你有权限的接口测试，请勿高频压测第三方接口。
+    </div>
+</div>
+
+<script>
+(function(){
+var running=false, stopped=false, method='GET', execMode='iters', dataType='demo';
+var stats={total:0,ok:0,fail:0}, rtSamples=[], statusCount={}, logRows=[];
+var qpsSeries=[], rtSeries=[], startTs=0, lastTick=0, windowCount=0;
+var timerTick=null, logFilter='all', schedTimer=null, roundNo=0, schedOn=false;
+
+function $(id){return document.getElementById(id);}
+var charts={};
+function initCharts(){
+    ['chartQps','chartRt','chartHist','chartStatus','chartPercentile','chartField'].forEach(function(id){
+        charts[id]=echarts.init($(id));
+    });
+}
+function baseOpt(){ return { tooltip:{trigger:'axis'}, grid:{left:45,right:15,top:30,bottom:28}, xAxis:{type:'category',data:[]}, yAxis:{type:'value'}, series:[] }; }
+window.addEventListener('resize',function(){for(var k in charts) charts[k].resize();});
+
+$('methodRow').addEventListener('click',function(e){
+    var b=e.target.closest('.m-btn'); if(!b)return;
+    document.querySelectorAll('.m-btn').forEach(function(x){x.classList.remove('active');});
+    b.classList.add('active'); method=b.dataset.m;
+});
+document.querySelectorAll('[data-body]').forEach(function(b){
+    b.addEventListener('click',function(){
+        document.querySelectorAll('[data-body]').forEach(function(x){x.classList.remove('active');});
+        b.classList.add('active');
+    });
+});
+document.querySelectorAll('[data-mode]').forEach(function(b){
+    b.addEventListener('click',function(){
+        document.querySelectorAll('[data-mode]').forEach(function(x){x.classList.remove('active');});
+        b.classList.add('active'); execMode=b.dataset.mode;
+        $('durationBox').classList.toggle('hidden',execMode!=='duration');
+    });
+});
+document.querySelectorAll('[data-type]').forEach(function(b){
+    b.addEventListener('click',function(){
+        document.querySelectorAll('[data-type]').forEach(function(x){x.classList.remove('active');});
+        b.classList.add('active'); dataType=b.dataset.type;
+    });
+});
+document.querySelectorAll('[data-filter]').forEach(function(b){
+    b.addEventListener('click',function(){
+        document.querySelectorAll('[data-filter]').forEach(function(x){x.classList.remove('active');});
+        b.classList.add('active'); logFilter=b.dataset.filter; renderLog();
+    });
+});
+
+function pad(n){return n<10?'0'+n:''+n;}
+function parseHeaders(str){ var o={}; str.split('\n').forEach(function(l){l=l.trim();if(!l)return;var i=l.indexOf(':');if(i>0)o[l.slice(0,i).trim()]=l.slice(i+1).trim();}); return o; }
+
+function fireRequest(thr){
+    return new Promise(function(resolve){
+        var url=$('url').value.trim(), timeout=Number($('timeout').value)||10000;
+        var t0=performance.now();
+        function done(status,size,err){
+            var ms=performance.now()-t0;
+            rtSamples.push(ms); stats.total++;
+            if(status>=200&&status<400) stats.ok++; else stats.fail++;
+            statusCount[status]=(statusCount[status]||0)+1;
+            logRows.push({method:method,url:url,status:status,ms:ms,size:size||0,time:new Date().toLocaleTimeString(),thr:thr,ok:(status>=200&&status<400)});
+            if(logRows.length>1000) logRows.shift();
+            resolve();
+        }
+        if(dataType==='demo'){
+            var dm=20+Math.random()*180, st=Math.random()<0.9?200:(Math.random()<0.5?404:500);
+            setTimeout(function(){ done(st,Math.floor(Math.random()*800)+100); }, dm*0.3); return;
+        }
+        var h=parseHeaders($('headers').value), bv=$('body').value;
+        var opts={method:method,headers:h,signal:AbortSignal.timeout(timeout)};
+        if(bv.trim()) opts.body=bv;
+        fetch(url,opts).then(function(res){
+            res.arrayBuffer().then(function(buf){ done(res.status,buf.byteLength); }).catch(function(){ done(res.status,0); });
+        }).catch(function(err){ done(0,0,err); });
+    });
+}
+
+function updateStats(){
+    $('stTotal').textContent='# '+stats.total;
+    $('stOk').textContent='# '+stats.ok;
+    $('stFail').textContent='# '+stats.fail;
+    var el=(performance.now()-startTs)/1000, qps=el>0?stats.total/el:0;
+    $('stQps').textContent='# '+qps.toFixed(1);
+    var avg=stats.total?rtSamples.reduce(function(a,b){return a+b;},0)/stats.total:0;
+    $('stAvg').textContent=avg?avg.toFixed(1)+'ms':'--';
+    var sorted=rtSamples.slice().sort(function(a,b){return a-b;});
+    var p95=sorted.length?sorted[Math.floor(sorted.length*0.95)]:0;
+    $('stP95').textContent=p95?p95.toFixed(1)+'ms':'--';
+}
+
+function pushTrend(){
+    var t=(performance.now()-startTs)/1000;
+    qpsSeries.push({t:t,qps:(windowCount/((performance.now()-lastTick)/1000)).toFixed(1)});
+    rtSeries.push({t:t,avg:stats.total?(rtSamples.reduce(function(a,b){return a+b;},0)/stats.total).toFixed(1):0});
+    windowCount=0; lastTick=performance.now();
+    var q=baseOpt(); q.xAxis.data=qpsSeries.map(function(x){return x.t.toFixed(0)+'s';});
+    q.series=[{type:'line',smooth:true,data:qpsSeries.map(function(x){return x.qps;}),areaStyle:{opacity:.15},lineStyle:{color:'#2563eb'}}];
+    charts.chartQps.setOption(q,true);
+    var r=baseOpt(); r.xAxis.data=rtSeries.map(function(x){return x.t.toFixed(0)+'s';});
+    r.series=[{type:'line',smooth:true,data:rtSeries.map(function(x){return x.avg;}),lineStyle:{color:'#f59e0b'}}];
+    charts.chartRt.setOption(r,true);
+}
+
+function drawDist(){
+    var bk=[0,50,100,200,500,1000,2000,5000], cn=new Array(bk.length).fill(0);
+    rtSamples.forEach(function(ms){ for(var i=0;i<bk.length;i++){ if(ms<=bk[i]||i===bk.length-1){cn[i]++;break;} } });
+    var h=baseOpt(); h.xAxis.data=['0-50','50-100','100-200','200-500','500-1k','1k-2k','2k-5k','5k+'];
+    h.series=[{type:'bar',data:cn,itemStyle:{color:'#8b5cf6'}}];
+    charts.chartHist.setOption(h,true);
+    var keys=Object.keys(statusCount), s=baseOpt();
+    s.xAxis.data=['status'];
+    s.series=[{type:'pie',radius:'60%',center:['50%','60%'],data:keys.map(function(k){return {name:k==='0'?'ERR':k,value:statusCount[k]};}),label:{formatter:'{b}: {c}'}}];
+    charts.chartStatus.setOption(s,true);
+    var sorted=rtSamples.slice().sort(function(a,b){return a-b;});
+    var p=[0.5,0.75,0.9,0.95,0.99], v=p.map(function(x){return sorted.length?sorted[Math.floor(sorted.length*x)]:0;});
+    var pc=baseOpt(); pc.xAxis.data=['P50','P75','P90','P95','P99'];
+    pc.series=[{type:'bar',data:v,itemStyle:{color:'#10b981'}}];
+    charts.chartPercentile.setOption(pc,true);
+}
+
+function renderLog(){
+    var kw=$('logSearch').value.trim().toLowerCase(), tb=$('logBody');
+    tb.innerHTML='';
+    var rows=logRows.filter(function(r){
+        if(logFilter==='ok'&&!r.ok)return false;
+        if(logFilter==='fail'&&r.ok)return false;
+        if(kw){
+            var hay=(r.method+' '+r.url+' '+r.status+' '+r.ms.toFixed(1)+' '+r.size+' '+(r.resp||'')).toLowerCase();
+            if(!hay.includes(kw))return false;
+        }
+        return true;
+    });
+    rows.slice(-150).forEach(function(r,i){
+        var tr=document.createElement('tr');
+        tr.style.cursor='pointer';
+        tr.innerHTML='<td>'+(i+1)+'</td><td>'+r.method+'</td><td>'+r.url+'</td><td style="color:'+(r.ok?'#10b981':'#dc2626')+'">'+(r.status||'ERR')+'</td><td>'+r.ms.toFixed(1)+'ms</td><td>'+r.size+'B</td><td>'+r.time+'</td><td>t'+r.thr+'</td><td><button class="btn btn-n" style="margin:0;padding:3px 8px;font-size:11px;" onclick="showResp('+(logRows.indexOf(r))+')">响应</button></td>';
+        tr.onclick=function(){ showResp(logRows.indexOf(r)); };
+        tb.appendChild(tr);
+    });
+}
+
+function showResp(idx){
+    var r=logRows[idx]; if(!r||r.resp===undefined) return;
+    alert('响应内容：\n\n'+(r.resp&&r.resp.length>4000?r.resp.substring(0,4000)+'...':r.resp||'(空)'));
+}
+
+function runWorker(thr){
+    var loop=function(){
+        if(stopped)return;
+        if(execMode==='iters' && thr>= (Number($('iterations').value)||1))return;
+        fireRequest(thr).then(function(){
+            windowCount++;
+            var th=Number($('think').value)||0;
+            setTimeout(loop,th);
+        });
+    };
+    loop();
+}
+
+function startPress(){
+    if(running)return;
+    running=true; stopped=false;
+    $('statusPill').textContent='运行中'; $('statusPill').style.background='#2563eb';
+    stats={total:0,ok:0,fail:0}; rtSamples=[]; statusCount={}; logRows=[];
+    qpsSeries=[]; rtSeries=[];
+    startTs=performance.now(); lastTick=startTs; windowCount=0;
+    $('logBody').innerHTML='';
+    var threads=Number($('threads').value)||1, ramp=Number($('rampup').value)||0;
+    for(var i=0;i<threads;i++){
+        var delay=ramp>0?(i/threads)*ramp*1000:0;
+        (function(idx){ setTimeout(function(){ if(!stopped) runWorker(idx); }, delay); })(i);
+    }
+    $('timerTxt').textContent='运行中';
+    var t0=Date.now();
+    timerTick=setInterval(function(){
+        var el=Math.floor((Date.now()-t0)/1000);
+        $('elapsedTxt').textContent='已运行 '+el+'s';
+        $('timerTxt').textContent='运行中 '+pad(Math.floor(el/60))+':'+pad(el%60);
+        updateStats(); pushTrend(); drawDist(); renderLog();
+        if(stopped){ clearInterval(timerTick); finalize(); }
+    },1000);
+}
+
+function stopPress(){
+    if(!running)return;
+    stopped=true; running=false;
+    $('statusPill').textContent='已停止'; $('statusPill').style.background='#dc2626';
+    $('timerTxt').textContent='已结束';
+    //记录本轮汇总
+    if(stats.total>0){
+        roundNo++;
+        var el=(performance.now()-startTs)/1000;
+        var tb=$('roundBody');
+        var tr=document.createElement('tr');
+        tr.innerHTML='<td>第'+roundNo+'轮</td><td>'+stats.total+'</td><td>'+stats.ok+'</td><td>'+stats.fail+'</td><td>'+(el>0?(stats.total/el).toFixed(1):'0')+'</td><td>'+(stats.total?(rtSamples.reduce(function(a,b){return a+b;},0)/stats.total).toFixed(1)+'ms':'--')+'</td><td>'+new Date().toLocaleTimeString()+'</td>';
+        tb.prepend(tr);
+    }
+}
+function finalize(){ updateStats(); pushTrend(); drawDist(); renderLog(); }
+
+// 定时任务
+function toggleSched(){
+    if(schedOn){ stopSched(); return; }
+    var sec=Number($('intervalSec').value)||10;
+    schedOn=true; $('btnSched').textContent='停止定时';
+    $('statusPill').textContent='定时中'; $('statusPill').style.background='#9333ea';
+    function run(){ if(!schedOn)return; startPress(); }
+    run();
+    schedTimer=setInterval(function(){ if(schedOn) startPress(); }, sec*1000);
+}
+function stopSched(){
+    schedOn=false; clearInterval(schedTimer);
+    $('btnSched').textContent='开启定时';
+    if(running) stopPress();
+    $('statusPill').textContent='就绪'; $('statusPill').style.background='#10b981';
+}
+
+initCharts();
+var empty=baseOpt(); empty.xAxis.data=['--']; empty.series=[{type:'bar',data:[0]}];
+charts.chartHist.setOption(empty,true);
+charts.chartPercentile.setOption(empty,true);
+charts.chartQps.setOption(baseOpt(),true);
+charts.chartRt.setOption(baseOpt(),true);
+charts.chartField.setOption(baseOpt(),true);
+})();
+</script>
+</body>
+</html>
