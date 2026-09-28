@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>接口并发测试工具 · 综合版</title>
+    <title>Stars - 并发测试工具 · 综合版</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <style>
         * { box-sizing:border-box; margin:0; padding:0; font-family:system-ui,-apple-system,sans-serif; }
@@ -53,24 +53,17 @@
         .tbl th, .tbl td { border:1px solid #eceef2; padding:6px 7px; text-align:left; white-space:nowrap; }
         .tbl th { background:#f8fafc; color:#555; }
         .tbl-wrap { max-height:260px; overflow:auto; }
-        .badge { display:inline-block; padding:1px 8px; border-radius:6px; font-size:11px; }
-        .b-ok { background:#dcfce7; color:#166534; }
-        .b-fail { background:#fee2e2; color:#991b1b; }
-        .resp-box { border:1px solid #eceef2; border-radius:8px; margin:6px 0; overflow:hidden; }
-        .resp-head { background:#f8fafc; padding:6px 10px; font-size:12px; color:#555; display:flex; justify-content:space-between; }
-        .resp-body { max-height:200px; overflow:auto; padding:8px 10px; font-size:12px; white-space:pre-wrap; word-break:break-all; background:#fafcff; }
         @media (max-width:640px){ .g4,.g2,.g3,.charts,.stats { grid-template-columns:1fr 1fr; } }
     </style>
 </head>
 <body>
 <header>
-    <div><h1>接口并发测试工具 · 综合版</h1><div class="sub">Load &amp; Concurrency Test Console</div></div>
+    <div><h1>Stars - 并发测试工具 · 综合版</h1><div class="sub">Load &amp; Concurrency Test Console</div></div>
     <span class="pill" id="statusPill">就绪</span>
 </header>
 
 <div class="tip">
 ⚠️ 浏览器 CORS 跨域限制，网页内直接请求可能报错；真实压测请复制生成的 Shell 脚本到 Termux/终端执行。<br>
-<b>仅限调试本人拥有权限的接口，严禁对第三方接口压测、攻击，违规后果自行承担。</b>
 </div>
 
 <div class="card">
@@ -81,7 +74,7 @@
         <div class="m-btn" data-m="PATCH">PATCH</div><div class="m-btn" data-m="HEAD">HEAD</div>
     </div>
     <div class="grid" style="margin-bottom:12px;">
-        <div><label>目标 URL</label><input id="url" value="https://httpbin.org/post" placeholder="https://api.example.com/v1/users"></div>
+        <div><label>目标 URL</label><input id="url" value="" placeholder="https://api.example.com/v1/users"></div>
     </div>
     <div class="grid g2" style="margin-bottom:12px;">
         <div>
@@ -105,8 +98,8 @@
 <div class="card">
     <h3><span class="tag">Stars</span> 压测配置</h3>
     <div class="grid g4" style="margin-bottom:12px;">
-        <div><label>并发线程数</label><input type="number" id="threads" value="20" min="1"></div>
-        <div><label>每线程迭代</label><input type="number" id="iterations" value="10" min="1"></div>
+        <div><label>并发线程数（记忆）</label><input type="number" id="threads" value="20" min="1"></div>
+        <div><label>每线程迭代（记忆）</label><input type="number" id="iterations" value="10" min="1"></div>
         <div><label>Ramp-up 爬坡 (秒)</label><input type="number" id="rampup" value="0" min="0"></div>
         <div><label>Think 间隔 (ms)</label><input type="number" id="think" value="0" min="0"></div>
     </div>
@@ -207,87 +200,154 @@
 <div class="card">
     <h3><span class="tag">Stars</span> 说明</h3>
     <div class="tip" style="margin:0;">
-        并发线程在浏览器内以异步协程调度实现，数值逼近真实压测但受单进程事件循环限制；「真实请求」依赖目标接口的 CORS 配置，跨域被拒绝会记为失败。「演示模拟」不产生网络流量，仅用于演示与教学。<br>
-        ⚠️ 仅对你有权限的接口测试，请勿高频压测第三方接口。
+        并发线程在浏览器内以异步协程调度实现，数值逼近真实压测但受单进程事件循环限制；「真实请求」依赖目标接口的 CORS 配置，跨域被拒绝会记为失败。「演示模拟」不产生网络流量，仅用于演示与教学。
     </div>
 </div>
 
 <script>
-(function(){
 var running=false, stopped=false, method='GET', execMode='iters', dataType='demo';
 var stats={total:0,ok:0,fail:0}, rtSamples=[], statusCount={}, logRows=[];
 var qpsSeries=[], rtSeries=[], startTs=0, lastTick=0, windowCount=0;
 var timerTick=null, logFilter='all', schedTimer=null, roundNo=0, schedOn=false;
+var charts={}, chartOK=false, fieldSeries=[], fieldHist={};
 
 function $(id){return document.getElementById(id);}
-var charts={};
+function pad(n){return n<10?'0'+n:''+n;}
+
 function initCharts(){
-    ['chartQps','chartRt','chartHist','chartStatus','chartPercentile','chartField'].forEach(function(id){
-        charts[id]=echarts.init($(id));
-    });
+    if(typeof echarts==='undefined'){ chartOK=false; return; }
+    try{
+        ['chartQps','chartRt','chartHist','chartStatus','chartPercentile','chartField'].forEach(function(id){
+            charts[id]=echarts.init($(id));
+        });
+        chartOK=true;
+        var empty={ tooltip:{trigger:'axis'}, grid:{left:45,right:15,top:30,bottom:28}, xAxis:{type:'category',data:['--']}, yAxis:{type:'value'}, series:[{type:'bar',data:[0]}] };
+        charts.chartHist.setOption(empty,true);
+        charts.chartPercentile.setOption(empty,true);
+        charts.chartQps.setOption(empty,true);
+        charts.chartRt.setOption(empty,true);
+        charts.chartField.setOption(empty,true);
+        window.addEventListener('resize',function(){for(var k in charts) charts[k].resize();});
+    }catch(e){ chartOK=false; }
 }
 function baseOpt(){ return { tooltip:{trigger:'axis'}, grid:{left:45,right:15,top:30,bottom:28}, xAxis:{type:'category',data:[]}, yAxis:{type:'value'}, series:[] }; }
-window.addEventListener('resize',function(){for(var k in charts) charts[k].resize();});
 
-$('methodRow').addEventListener('click',function(e){
-    var b=e.target.closest('.m-btn'); if(!b)return;
-    document.querySelectorAll('.m-btn').forEach(function(x){x.classList.remove('active');});
-    b.classList.add('active'); method=b.dataset.m;
-});
-document.querySelectorAll('[data-body]').forEach(function(b){
-    b.addEventListener('click',function(){
-        document.querySelectorAll('[data-body]').forEach(function(x){x.classList.remove('active');});
-        b.classList.add('active');
+/* 初始化绑定（放在脚本尾部执行，而非函数内） */
+(function init(){
+    initCharts();
+    /* 并发线程数 / 每线程迭代 —— 记忆性（localStorage 持久化） */
+    var rememberIds = ['threads','iterations'];
+    rememberIds.forEach(function(id){
+        var el = document.getElementById(id);
+        try{
+            var saved = localStorage.getItem('stars_'+id);
+            if(saved !== null) el.value = saved;
+        }catch(e){}
+        el.addEventListener('input', function(){
+            try{ localStorage.setItem('stars_'+id, el.value); }catch(e){}
+        });
     });
-});
-document.querySelectorAll('[data-mode]').forEach(function(b){
-    b.addEventListener('click',function(){
-        document.querySelectorAll('[data-mode]').forEach(function(x){x.classList.remove('active');});
-        b.classList.add('active'); execMode=b.dataset.mode;
-        $('durationBox').classList.toggle('hidden',execMode!=='duration');
+    var mr=document.getElementById('methodRow');
+    mr.addEventListener('click',function(e){
+        var b=e.target.closest('.m-btn'); if(!b)return;
+        document.querySelectorAll('.m-btn').forEach(function(x){x.classList.remove('active');});
+        b.classList.add('active'); method=b.dataset.m;
     });
-});
-document.querySelectorAll('[data-type]').forEach(function(b){
-    b.addEventListener('click',function(){
-        document.querySelectorAll('[data-type]').forEach(function(x){x.classList.remove('active');});
-        b.classList.add('active'); dataType=b.dataset.type;
+    document.querySelectorAll('[data-body]').forEach(function(b){
+        b.addEventListener('click',function(){
+            document.querySelectorAll('[data-body]').forEach(function(x){x.classList.remove('active');});
+            b.classList.add('active');
+        });
     });
-});
-document.querySelectorAll('[data-filter]').forEach(function(b){
-    b.addEventListener('click',function(){
-        document.querySelectorAll('[data-filter]').forEach(function(x){x.classList.remove('active');});
-        b.classList.add('active'); logFilter=b.dataset.filter; renderLog();
+    document.querySelectorAll('[data-mode]').forEach(function(b){
+        b.addEventListener('click',function(){
+            document.querySelectorAll('[data-mode]').forEach(function(x){x.classList.remove('active');});
+            b.classList.add('active'); execMode=b.dataset.mode;
+            $('durationBox').classList.toggle('hidden',execMode!=='duration');
+        });
     });
-});
+    document.querySelectorAll('[data-type]').forEach(function(b){
+        b.addEventListener('click',function(){
+            document.querySelectorAll('[data-type]').forEach(function(x){x.classList.remove('active');});
+            b.classList.add('active'); dataType=b.dataset.type;
+        });
+    });
+    document.querySelectorAll('[data-filter]').forEach(function(b){
+        b.addEventListener('click',function(){
+            document.querySelectorAll('[data-filter]').forEach(function(x){x.classList.remove('active');});
+            b.classList.add('active'); logFilter=b.dataset.filter; renderLog();
+        });
+    });
+})();
 
-function pad(n){return n<10?'0'+n:''+n;}
 function parseHeaders(str){ var o={}; str.split('\n').forEach(function(l){l=l.trim();if(!l)return;var i=l.indexOf(':');if(i>0)o[l.slice(0,i).trim()]=l.slice(i+1).trim();}); return o; }
 
 function fireRequest(thr){
     return new Promise(function(resolve){
         var url=$('url').value.trim(), timeout=Number($('timeout').value)||10000;
         var t0=performance.now();
-        function done(status,size,err){
+        function done(status,size,respText){
             var ms=performance.now()-t0;
             rtSamples.push(ms); stats.total++;
             if(status>=200&&status<400) stats.ok++; else stats.fail++;
             statusCount[status]=(statusCount[status]||0)+1;
-            logRows.push({method:method,url:url,status:status,ms:ms,size:size||0,time:new Date().toLocaleTimeString(),thr:thr,ok:(status>=200&&status<400)});
+            logRows.push({method:method,url:url,status:status,ms:ms,size:size||0,time:new Date().toLocaleTimeString(),thr:thr,ok:(status>=200&&status<400),resp:respText});
             if(logRows.length>1000) logRows.shift();
+            collectFields(respText);
             resolve();
         }
         if(dataType==='demo'){
             var dm=20+Math.random()*180, st=Math.random()<0.9?200:(Math.random()<0.5?404:500);
-            setTimeout(function(){ done(st,Math.floor(Math.random()*800)+100); }, dm*0.3); return;
+            setTimeout(function(){
+                var txt = JSON.stringify({result:Math.floor(Math.random()*100), latency:Math.floor(dm)});
+                done(st,Math.floor(Math.random()*800)+100, txt);
+            }, dm*0.3); return;
         }
         var h=parseHeaders($('headers').value), bv=$('body').value;
         var opts={method:method,headers:h,signal:AbortSignal.timeout(timeout)};
         if(bv.trim()) opts.body=bv;
         fetch(url,opts).then(function(res){
-            res.arrayBuffer().then(function(buf){ done(res.status,buf.byteLength); }).catch(function(){ done(res.status,0); });
-        }).catch(function(err){ done(0,0,err); });
+            res.arrayBuffer().then(function(buf){
+                var txt=''; try{ txt=new TextDecoder().decode(buf); }catch(e){}
+                done(res.status,buf.byteLength,txt);
+            }).catch(function(){ done(res.status,0,''); });
+        }).catch(function(err){ done(0,0,'请求异常: '+err.message); });
     });
 }
+
+function collectFields(respText){
+    if(!respText) return;
+    var obj;
+    try{ obj=JSON.parse(respText); }catch(e){ return; }
+    if(!obj||typeof obj!=='object') return;
+    var keys=Object.keys(obj);
+    var sel=$('fieldSelect');
+    var changed=false;
+    keys.forEach(function(k){
+        if(typeof obj[k]==='number' && fieldHist[k]===undefined){
+            fieldHist[k]=[]; changed=true;
+            var opt=document.createElement('option');
+            opt.value=k; opt.textContent=k; sel.appendChild(opt);
+        }
+    });
+    if(changed && sel.options.length>0 && sel.value===''){
+        sel.value=sel.options[1] ? sel.options[1].value : sel.options[0].value;
+    }
+    keys.forEach(function(k){
+        if(fieldHist[k]!==undefined && typeof obj[k]==='number') fieldHist[k].push(obj[k]);
+    });
+    drawField();
+}
+function drawField(){
+    if(!chartOK) return;
+    var val=$('fieldSelect').value;
+    if(!val || !fieldHist[val]) return;
+    var opt=baseOpt();
+    opt.xAxis.data=fieldHist[val].map(function(_,i){return '#'+(i+1);});
+    opt.series=[{type:'line',smooth:true,data:fieldHist[val],areaStyle:{opacity:.15},lineStyle:{color:'#2563eb'}}];
+    charts.chartField.setOption(opt,true);
+}
+if($('fieldSelect')) $('fieldSelect').addEventListener('change',function(){ drawField(); });
 
 function updateStats(){
     $('stTotal').textContent='# '+stats.total;
@@ -307,6 +367,7 @@ function pushTrend(){
     qpsSeries.push({t:t,qps:(windowCount/((performance.now()-lastTick)/1000)).toFixed(1)});
     rtSeries.push({t:t,avg:stats.total?(rtSamples.reduce(function(a,b){return a+b;},0)/stats.total).toFixed(1):0});
     windowCount=0; lastTick=performance.now();
+    if(!chartOK) return;
     var q=baseOpt(); q.xAxis.data=qpsSeries.map(function(x){return x.t.toFixed(0)+'s';});
     q.series=[{type:'line',smooth:true,data:qpsSeries.map(function(x){return x.qps;}),areaStyle:{opacity:.15},lineStyle:{color:'#2563eb'}}];
     charts.chartQps.setOption(q,true);
@@ -316,13 +377,13 @@ function pushTrend(){
 }
 
 function drawDist(){
+    if(!chartOK) return;
     var bk=[0,50,100,200,500,1000,2000,5000], cn=new Array(bk.length).fill(0);
     rtSamples.forEach(function(ms){ for(var i=0;i<bk.length;i++){ if(ms<=bk[i]||i===bk.length-1){cn[i]++;break;} } });
     var h=baseOpt(); h.xAxis.data=['0-50','50-100','100-200','200-500','500-1k','1k-2k','2k-5k','5k+'];
     h.series=[{type:'bar',data:cn,itemStyle:{color:'#8b5cf6'}}];
     charts.chartHist.setOption(h,true);
     var keys=Object.keys(statusCount), s=baseOpt();
-    s.xAxis.data=['status'];
     s.series=[{type:'pie',radius:'60%',center:['50%','60%'],data:keys.map(function(k){return {name:k==='0'?'ERR':k,value:statusCount[k]};}),label:{formatter:'{b}: {c}'}}];
     charts.chartStatus.setOption(s,true);
     var sorted=rtSamples.slice().sort(function(a,b){return a-b;});
@@ -346,16 +407,18 @@ function renderLog(){
     });
     rows.slice(-150).forEach(function(r,i){
         var tr=document.createElement('tr');
-        tr.style.cursor='pointer';
-        tr.innerHTML='<td>'+(i+1)+'</td><td>'+r.method+'</td><td>'+r.url+'</td><td style="color:'+(r.ok?'#10b981':'#dc2626')+'">'+(r.status||'ERR')+'</td><td>'+r.ms.toFixed(1)+'ms</td><td>'+r.size+'B</td><td>'+r.time+'</td><td>t'+r.thr+'</td><td><button class="btn btn-n" style="margin:0;padding:3px 8px;font-size:11px;" onclick="showResp('+(logRows.indexOf(r))+')">响应</button></td>';
-        tr.onclick=function(){ showResp(logRows.indexOf(r)); };
+        tr.innerHTML='<td>'+(i+1)+'</td><td>'+r.method+'</td><td>'+r.url+'</td><td style="color:'+(r.ok?'#10b981':'#dc2626')+'">'+(r.status||'ERR')+'</td><td>'+r.ms.toFixed(1)+'ms</td><td>'+r.size+'B</td><td>'+r.time+'</td><td>t'+r.thr+'</td><td><button class="btn btn-n" style="margin:0;padding:3px 8px;font-size:11px;" onclick="showResp(event,'+(logRows.indexOf(r))+')">响应</button></td>';
+        tr.onclick=function(){ showResp(null, logRows.indexOf(r)); };
         tb.appendChild(tr);
     });
 }
 
-function showResp(idx){
-    var r=logRows[idx]; if(!r||r.resp===undefined) return;
-    alert('响应内容：\n\n'+(r.resp&&r.resp.length>4000?r.resp.substring(0,4000)+'...':r.resp||'(空)'));
+function showResp(ev, idx){
+    if(ev){ ev.stopPropagation(); }
+    var r=logRows[idx]; if(!r) return;
+    var body = r.resp && r.resp.length>4000 ? r.resp.substring(0,4000)+'...' : (r.resp||'(空)');
+    try{ body = JSON.stringify(JSON.parse(body),null,2); }catch(e){}
+    alert('第'+(idx+1)+'条响应内容：\n\n'+body);
 }
 
 function runWorker(thr){
@@ -376,7 +439,8 @@ function startPress(){
     running=true; stopped=false;
     $('statusPill').textContent='运行中'; $('statusPill').style.background='#2563eb';
     stats={total:0,ok:0,fail:0}; rtSamples=[]; statusCount={}; logRows=[];
-    qpsSeries=[]; rtSeries=[];
+    qpsSeries=[]; rtSeries=[]; fieldHist={};
+    $('fieldSelect').innerHTML='<option value="">暂无响应数据</option>';
     startTs=performance.now(); lastTick=startTs; windowCount=0;
     $('logBody').innerHTML='';
     var threads=Number($('threads').value)||1, ramp=Number($('rampup').value)||0;
@@ -400,7 +464,6 @@ function stopPress(){
     stopped=true; running=false;
     $('statusPill').textContent='已停止'; $('statusPill').style.background='#dc2626';
     $('timerTxt').textContent='已结束';
-    //记录本轮汇总
     if(stats.total>0){
         roundNo++;
         var el=(performance.now()-startTs)/1000;
@@ -412,14 +475,12 @@ function stopPress(){
 }
 function finalize(){ updateStats(); pushTrend(); drawDist(); renderLog(); }
 
-// 定时任务
 function toggleSched(){
     if(schedOn){ stopSched(); return; }
     var sec=Number($('intervalSec').value)||10;
     schedOn=true; $('btnSched').textContent='停止定时';
     $('statusPill').textContent='定时中'; $('statusPill').style.background='#9333ea';
-    function run(){ if(!schedOn)return; startPress(); }
-    run();
+    startPress();
     schedTimer=setInterval(function(){ if(schedOn) startPress(); }, sec*1000);
 }
 function stopSched(){
@@ -428,15 +489,6 @@ function stopSched(){
     if(running) stopPress();
     $('statusPill').textContent='就绪'; $('statusPill').style.background='#10b981';
 }
-
-initCharts();
-var empty=baseOpt(); empty.xAxis.data=['--']; empty.series=[{type:'bar',data:[0]}];
-charts.chartHist.setOption(empty,true);
-charts.chartPercentile.setOption(empty,true);
-charts.chartQps.setOption(baseOpt(),true);
-charts.chartRt.setOption(baseOpt(),true);
-charts.chartField.setOption(baseOpt(),true);
-})();
 </script>
 </body>
 </html>
