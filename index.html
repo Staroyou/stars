@@ -18,11 +18,10 @@
         .tag { background:#eef2ff; color:#2563eb; font-size:11px; padding:2px 8px; border-radius:6px; }
         label { font-size:12px; color:#555; display:block; margin-bottom:4px; }
         textarea, input { width:100%; border:1px solid #d1d5db; border-radius:8px; padding:9px 10px; font-size:13px; }
-        textarea { min-height:90px; resize:vertical; }
+        textarea { min-height:70px; resize:vertical; }
         .grid { display:grid; gap:12px; }
         .g2 { grid-template-columns:1fr 1fr; }
         .g4 { grid-template-columns:repeat(4,1fr); }
-        .g3 { grid-template-columns:1fr 1fr 1fr; }
         .btn { padding:12px; border:none; border-radius:8px; font-size:15px; margin:5px 0; cursor:pointer; }
         .btn-p { background:#2563eb; color:#fff; }
         .btn-d { background:#dc2626; color:#fff; }
@@ -53,7 +52,12 @@
         .tbl th, .tbl td { border:1px solid #eceef2; padding:6px 7px; text-align:left; white-space:nowrap; }
         .tbl th { background:#f8fafc; color:#555; }
         .tbl-wrap { max-height:260px; overflow:auto; }
-        @media (max-width:640px){ .g4,.g2,.g3,.charts,.stats { grid-template-columns:1fr 1fr; } }
+        .expander { cursor:pointer; color:#2563eb; user-select:none; }
+        .log-item { border:1px solid #e2e8f0; border-radius:8px; margin-bottom:8px; overflow:hidden; }
+        .log-head { display:flex; flex-wrap:wrap; gap:12px; padding:7px 12px; font-size:12px; color:#334155; background:#f8fafc; font-family:monospace; }
+        .log-body { display:block; padding:10px 12px; font-size:12px; white-space:pre-wrap; word-break:break-all; background:#f6f8ff; border-top:1px dashed #cbd5e1; color:#1e293b; font-family:monospace; }
+        .log-url { color:#475569; }
+        @media (max-width:640px){ .g4,.g2,.charts,.stats { grid-template-columns:1fr 1fr; } }
     </style>
 </head>
 <body>
@@ -68,6 +72,17 @@
 
 <div class="card">
     <h3><span class="tag">Stars</span> 请求配置</h3>
+    <div class="grid" style="margin-bottom:10px;">
+        <label>抓包一键识别：粘贴原始 HTTP 请求，自动填入下方方法/URL/Headers/Body</label>
+        <textarea id="rawHttp" placeholder="粘贴完整抓包原始请求，例如：
+POST /api/demo HTTP/1.1
+Host: api.test.com
+Content-Type: application/json
+Authorization: Bearer xxx
+
+{\"data\":\"test\"}"></textarea>
+        <button class="btn btn-p" style="margin:4px 0;" onclick="identifyReq()">🔍 一键识别并填入</button>
+    </div>
     <div class="method-row" id="methodRow">
         <div class="m-btn active" data-m="GET">GET</div><div class="m-btn" data-m="POST">POST</div>
         <div class="m-btn" data-m="PUT">PUT</div><div class="m-btn" data-m="DELETE">DELETE</div>
@@ -103,36 +118,55 @@
         <div><label>Ramp-up 爬坡 (秒)</label><input type="number" id="rampup" value="0" min="0"></div>
         <div><label>Think 间隔 (ms)</label><input type="number" id="think" value="0" min="0"></div>
     </div>
+    <div class="grid g4" style="margin-bottom:12px;">
+        <div><label>执行次数（总请求上限，0=不限）</label><input type="number" id="execTimes" value="0" min="0"></div>
+        <div><label>请求间隔 (ms)</label><input type="number" id="reqInterval" value="0" min="0"></div>
+    </div>
     <div class="grid g2" style="margin-bottom:10px;">
         <div class="seg">
             <button data-mode="iters" class="active">按迭代数</button>
             <button data-mode="duration">按持续时间</button>
         </div>
-        <div class="seg">
-            <button data-type="real">真实请求</button>
-            <button data-type="demo" class="active">演示模拟</button>
-        </div>
     </div>
     <div class="grid g2 hidden" id="durationBox" style="margin-bottom:10px;">
         <div><label>持续时间 (秒)</label><input type="number" id="duration" value="30" min="1"></div>
     </div>
-    <div class="tip" style="margin:0;">真实请求通过浏览器 <b>fetch</b> 发出，目标接口需允许跨域（CORS）；演示模拟不发起网络请求，用于离线体验完整压测流程。</div>
+    <div class="tip" style="margin:0;">真实请求通过浏览器 <b>fetch</b> 发出，目标接口需允许跨域（CORS），跨域被拒绝会记为失败。</div>
 </div>
 
 <div class="card">
     <h3><span class="tag">Stars</span> 定时执行任务</h3>
-    <div class="grid g3" style="margin-bottom:10px;">
-        <div>
+    <div class="seg" style="margin-bottom:8px;">
+        <button data-sched="interval" class="active">按间隔（每隔N秒）</button>
+        <button data-sched="clock">按时刻（时分秒到点执行）</button>
+    </div>
+    <div class="grid g4" style="margin-bottom:10px;">
+        <div id="intervalBox">
             <label>每隔 N 秒执行一轮</label>
             <input type="number" id="intervalSec" value="10" min="1">
+        </div>
+        <div id="clockBox" class="hidden">
+            <label>到点执行 · 时:分:秒</label>
+            <div style="display:flex;gap:6px;">
+                <input type="number" id="clockHour" min="0" max="23" value="0">
+                <input type="number" id="clockMin" min="0" max="59" value="0">
+                <input type="number" id="clockSec" min="0" max="59" value="0">
+            </div>
+        </div>
+        <div>
+            <label>执行轮次（0=一直执行）</label>
+            <input type="number" id="schedCount" value="0" min="0">
         </div>
         <div class="col" style="display:flex;align-items:flex-end;gap:6px;">
             <button class="btn btn-p" id="btnSched" style="flex:1;margin:0;" onclick="toggleSched()">开启定时</button>
             <button class="btn btn-d" id="btnSchedStop" style="flex:1;margin:0;" onclick="stopSched()">停止定时</button>
         </div>
     </div>
+    <div id="schedStatus" class="tip" style="margin:0;color:#3730a3;background:#eef2ff;border-color:#c7d2fe;">
+        定时未开启。按间隔模式：每隔N秒自动执行一轮；按时刻模式：到达设定的时:分:秒自动执行。
+    </div>
     <div class="tip" style="margin:0;">
-        开启后工具会按设定的间隔自动重复执行压测；每轮执行完（迭代结束或时长达到）自动记录并汇总，下方图表与表格可视化每一轮的 QPS、成功数、失败数与平均响应时间。手动点击「停止」会中止当前轮并暂停后续调度。
+        开启后工具会按设定方式自动执行压测；每轮执行完自动记录并汇总，下方表格可视化每一轮的 QPS、成功数、失败数与平均响应时间。
     </div>
     <div class="tbl-wrap" style="margin-top:10px;">
         <table class="tbl">
@@ -198,60 +232,71 @@
 </div>
 
 <div class="card">
+    <h3><span class="tag">Stars</span> 详细日志（响应自动展开）</h3>
+    <div class="tbl-wrap" id="detailLogBox" style="max-height:420px;"></div>
+</div>
+
+<div class="card">
     <h3><span class="tag">Stars</span> 说明</h3>
     <div class="tip" style="margin:0;">
-        并发线程在浏览器内以异步协程调度实现，数值逼近真实压测但受单进程事件循环限制；「真实请求」依赖目标接口的 CORS 配置，跨域被拒绝会记为失败。「演示模拟」不产生网络流量，仅用于演示与教学。
+        并发线程在浏览器内以异步协程调度实现，数值逼近真实压测但受单进程事件循环限制；「真实请求」依赖目标接口的 CORS 配置，跨域被拒绝会记为失败。
     </div>
 </div>
 
 <script>
-var running=false, stopped=false, method='GET', execMode='iters', dataType='demo';
+var running=false, stopped=false, method='GET', execMode='iters';
 var stats={total:0,ok:0,fail:0}, rtSamples=[], statusCount={}, logRows=[];
 var qpsSeries=[], rtSeries=[], startTs=0, lastTick=0, windowCount=0;
-var timerTick=null, logFilter='all', schedTimer=null, roundNo=0, schedOn=false;
-var charts={}, chartOK=false, fieldSeries=[], fieldHist={};
+var timerTick=null, logFilter='all', schedTimer=null, roundNo=0, schedOn=false, schedMode='interval', clockTimer=null;
+var charts={}, chartOK=false, fieldHist={};
 
 function $(id){return document.getElementById(id);}
 function pad(n){return n<10?'0'+n:''+n;}
+function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function initCharts(){
     if(typeof echarts==='undefined'){ chartOK=false; return; }
     try{
-        ['chartQps','chartRt','chartHist','chartStatus','chartPercentile','chartField'].forEach(function(id){
-            charts[id]=echarts.init($(id));
-        });
+        ['chartQps','chartRt','chartHist','chartStatus','chartPercentile','chartField'].forEach(function(id){ charts[id]=echarts.init($(id)); });
         chartOK=true;
         var empty={ tooltip:{trigger:'axis'}, grid:{left:45,right:15,top:30,bottom:28}, xAxis:{type:'category',data:['--']}, yAxis:{type:'value'}, series:[{type:'bar',data:[0]}] };
-        charts.chartHist.setOption(empty,true);
-        charts.chartPercentile.setOption(empty,true);
-        charts.chartQps.setOption(empty,true);
-        charts.chartRt.setOption(empty,true);
-        charts.chartField.setOption(empty,true);
+        charts.chartHist.setOption(empty,true); charts.chartPercentile.setOption(empty,true);
+        charts.chartQps.setOption(empty,true); charts.chartRt.setOption(empty,true); charts.chartField.setOption(empty,true);
         window.addEventListener('resize',function(){for(var k in charts) charts[k].resize();});
     }catch(e){ chartOK=false; }
 }
 function baseOpt(){ return { tooltip:{trigger:'axis'}, grid:{left:45,right:15,top:30,bottom:28}, xAxis:{type:'category',data:[]}, yAxis:{type:'value'}, series:[] }; }
 
-/* 初始化绑定（放在脚本尾部执行，而非函数内） */
 (function init(){
     initCharts();
-    /* 并发线程数 / 每线程迭代 —— 记忆性（localStorage 持久化） */
-    var rememberIds = ['threads','iterations'];
+    var rememberIds = ['url','headers','body','timeout','threads','iterations','rampup','think','execTimes','reqInterval','duration','intervalSec','clockHour','clockMin','clockSec','schedCount'];
     rememberIds.forEach(function(id){
-        var el = document.getElementById(id);
-        try{
-            var saved = localStorage.getItem('stars_'+id);
-            if(saved !== null) el.value = saved;
-        }catch(e){}
-        el.addEventListener('input', function(){
-            try{ localStorage.setItem('stars_'+id, el.value); }catch(e){}
-        });
+        var el=document.getElementById(id); if(!el)return;
+        try{ var sv=localStorage.getItem('stars_'+id); if(sv!==null) el.value=sv; }catch(e){}
+        el.addEventListener('input',function(){ try{ localStorage.setItem('stars_'+id, el.value); }catch(e){} });
     });
+    try{ var sm=localStorage.getItem('stars_method');
+        if(sm){ var mt=document.querySelector('.m-btn[data-m="'+sm+'"]');
+            if(mt){ document.querySelectorAll('.m-btn').forEach(function(x){x.classList.remove('active');}); mt.classList.add('active'); method=sm; } }
+    }catch(e){}
     var mr=document.getElementById('methodRow');
     mr.addEventListener('click',function(e){
         var b=e.target.closest('.m-btn'); if(!b)return;
         document.querySelectorAll('.m-btn').forEach(function(x){x.classList.remove('active');});
         b.classList.add('active'); method=b.dataset.m;
+        try{ localStorage.setItem('stars_method', method); }catch(e){}
+    });
+    try{ var smd=localStorage.getItem('stars_execMode');
+        if(smd){ var mo=document.querySelector('[data-mode="'+smd+'"]');
+            if(mo){ document.querySelectorAll('[data-mode]').forEach(function(x){x.classList.remove('active');}); mo.classList.add('active'); execMode=smd; $('durationBox').classList.toggle('hidden',execMode!=='duration'); } }
+    }catch(e){}
+    document.querySelectorAll('[data-mode]').forEach(function(b){
+        b.addEventListener('click',function(){
+            document.querySelectorAll('[data-mode]').forEach(function(x){x.classList.remove('active');});
+            b.classList.add('active'); execMode=b.dataset.mode;
+            $('durationBox').classList.toggle('hidden',execMode!=='duration');
+            try{ localStorage.setItem('stars_execMode', execMode); }catch(e){}
+        });
     });
     document.querySelectorAll('[data-body]').forEach(function(b){
         b.addEventListener('click',function(){
@@ -259,17 +304,12 @@ function baseOpt(){ return { tooltip:{trigger:'axis'}, grid:{left:45,right:15,to
             b.classList.add('active');
         });
     });
-    document.querySelectorAll('[data-mode]').forEach(function(b){
+    document.querySelectorAll('[data-sched]').forEach(function(b){
         b.addEventListener('click',function(){
-            document.querySelectorAll('[data-mode]').forEach(function(x){x.classList.remove('active');});
-            b.classList.add('active'); execMode=b.dataset.mode;
-            $('durationBox').classList.toggle('hidden',execMode!=='duration');
-        });
-    });
-    document.querySelectorAll('[data-type]').forEach(function(b){
-        b.addEventListener('click',function(){
-            document.querySelectorAll('[data-type]').forEach(function(x){x.classList.remove('active');});
-            b.classList.add('active'); dataType=b.dataset.type;
+            document.querySelectorAll('[data-sched]').forEach(function(x){x.classList.remove('active');});
+            b.classList.add('active'); schedMode=b.dataset.sched;
+            $('intervalBox').classList.toggle('hidden',schedMode!=='interval');
+            $('clockBox').classList.toggle('hidden',schedMode!=='clock');
         });
     });
     document.querySelectorAll('[data-filter]').forEach(function(b){
@@ -278,9 +318,38 @@ function baseOpt(){ return { tooltip:{trigger:'axis'}, grid:{left:45,right:15,to
             b.classList.add('active'); logFilter=b.dataset.filter; renderLog();
         });
     });
+    if($('fieldSelect')) $('fieldSelect').addEventListener('change',function(){ drawField(); });
 })();
 
 function parseHeaders(str){ var o={}; str.split('\n').forEach(function(l){l=l.trim();if(!l)return;var i=l.indexOf(':');if(i>0)o[l.slice(0,i).trim()]=l.slice(i+1).trim();}); return o; }
+
+function identifyReq(){
+    var raw=$('rawHttp').value;
+    if(!raw.trim()){ alert('请先粘贴抓包原始请求内容'); return; }
+    var lines=raw.split('\n'), h={}, methodVal='', pathVal='', bodyStr='', readBody=false;
+    for(var i=0;i<lines.length;i++){
+        var l=lines[i].replace(/\r$/,'');
+        if(!readBody){
+            if(l===''){ readBody=true; continue; }
+            if(i===0){ var sp=l.split(/\s+/); methodVal=sp[0]; pathVal=sp[1]; continue; }
+            var kv=l.split(':');
+            if(kv.length>=2) h[kv[0].trim()]=kv.slice(1).join(':').trim();
+        }else bodyStr += l+'\n';
+    }
+    if(methodVal){
+        var btn=document.querySelector('.m-btn[data-m="'+methodVal+'"]');
+        if(btn){ document.querySelectorAll('.m-btn').forEach(function(x){x.classList.remove('active');}); btn.classList.add('active'); method=methodVal; }
+    }
+    var headerText=''; for(var k in h) headerText += k+': '+h[k]+'\n';
+    $('headers').value = headerText.trim();
+    $('body').value = bodyStr.trim();
+    var host=h['Host'], urlVal=$('url').value;
+    if(pathVal && host) urlVal='https://'+host+pathVal;
+    else if(pathVal && /^https?:\/\//i.test(pathVal)) urlVal=pathVal;
+    $('url').value=urlVal.trim();
+    renderDetailLog();
+    alert('✅ 一键识别完成：已自动填入 方法 / URL / Headers / Body');
+}
 
 function fireRequest(thr){
     return new Promise(function(resolve){
@@ -296,13 +365,6 @@ function fireRequest(thr){
             collectFields(respText);
             resolve();
         }
-        if(dataType==='demo'){
-            var dm=20+Math.random()*180, st=Math.random()<0.9?200:(Math.random()<0.5?404:500);
-            setTimeout(function(){
-                var txt = JSON.stringify({result:Math.floor(Math.random()*100), latency:Math.floor(dm)});
-                done(st,Math.floor(Math.random()*800)+100, txt);
-            }, dm*0.3); return;
-        }
         var h=parseHeaders($('headers').value), bv=$('body').value;
         var opts={method:method,headers:h,signal:AbortSignal.timeout(timeout)};
         if(bv.trim()) opts.body=bv;
@@ -317,25 +379,17 @@ function fireRequest(thr){
 
 function collectFields(respText){
     if(!respText) return;
-    var obj;
-    try{ obj=JSON.parse(respText); }catch(e){ return; }
+    var obj; try{ obj=JSON.parse(respText); }catch(e){ return; }
     if(!obj||typeof obj!=='object') return;
-    var keys=Object.keys(obj);
-    var sel=$('fieldSelect');
-    var changed=false;
+    var keys=Object.keys(obj), sel=$('fieldSelect'), changed=false;
     keys.forEach(function(k){
         if(typeof obj[k]==='number' && fieldHist[k]===undefined){
             fieldHist[k]=[]; changed=true;
-            var opt=document.createElement('option');
-            opt.value=k; opt.textContent=k; sel.appendChild(opt);
+            var opt=document.createElement('option'); opt.value=k; opt.textContent=k; sel.appendChild(opt);
         }
     });
-    if(changed && sel.options.length>0 && sel.value===''){
-        sel.value=sel.options[1] ? sel.options[1].value : sel.options[0].value;
-    }
-    keys.forEach(function(k){
-        if(fieldHist[k]!==undefined && typeof obj[k]==='number') fieldHist[k].push(obj[k]);
-    });
+    if(changed && sel.options.length>0 && sel.value==='') sel.value=sel.options[1]?sel.options[1].value:sel.options[0].value;
+    keys.forEach(function(k){ if(fieldHist[k]!==undefined && typeof obj[k]==='number') fieldHist[k].push(obj[k]); });
     drawField();
 }
 function drawField(){
@@ -347,7 +401,6 @@ function drawField(){
     opt.series=[{type:'line',smooth:true,data:fieldHist[val],areaStyle:{opacity:.15},lineStyle:{color:'#2563eb'}}];
     charts.chartField.setOption(opt,true);
 }
-if($('fieldSelect')) $('fieldSelect').addEventListener('change',function(){ drawField(); });
 
 function updateStats(){
     $('stTotal').textContent='# '+stats.total;
@@ -361,7 +414,6 @@ function updateStats(){
     var p95=sorted.length?sorted[Math.floor(sorted.length*0.95)]:0;
     $('stP95').textContent=p95?p95.toFixed(1)+'ms':'--';
 }
-
 function pushTrend(){
     var t=(performance.now()-startTs)/1000;
     qpsSeries.push({t:t,qps:(windowCount/((performance.now()-lastTick)/1000)).toFixed(1)});
@@ -375,7 +427,6 @@ function pushTrend(){
     r.series=[{type:'line',smooth:true,data:rtSeries.map(function(x){return x.avg;}),lineStyle:{color:'#f59e0b'}}];
     charts.chartRt.setOption(r,true);
 }
-
 function drawDist(){
     if(!chartOK) return;
     var bk=[0,50,100,200,500,1000,2000,5000], cn=new Array(bk.length).fill(0);
@@ -399,41 +450,66 @@ function renderLog(){
     var rows=logRows.filter(function(r){
         if(logFilter==='ok'&&!r.ok)return false;
         if(logFilter==='fail'&&r.ok)return false;
-        if(kw){
-            var hay=(r.method+' '+r.url+' '+r.status+' '+r.ms.toFixed(1)+' '+r.size+' '+(r.resp||'')).toLowerCase();
-            if(!hay.includes(kw))return false;
-        }
+        if(kw){ var hay=(r.method+' '+r.url+' '+r.status+' '+r.ms.toFixed(1)+' '+r.size+' '+(r.resp||'')).toLowerCase(); if(!hay.includes(kw))return false; }
         return true;
     });
     rows.slice(-150).forEach(function(r,i){
-        var tr=document.createElement('tr');
-        tr.innerHTML='<td>'+(i+1)+'</td><td>'+r.method+'</td><td>'+r.url+'</td><td style="color:'+(r.ok?'#10b981':'#dc2626')+'">'+(r.status||'ERR')+'</td><td>'+r.ms.toFixed(1)+'ms</td><td>'+r.size+'B</td><td>'+r.time+'</td><td>t'+r.thr+'</td><td><button class="btn btn-n" style="margin:0;padding:3px 8px;font-size:11px;" onclick="showResp(event,'+(logRows.indexOf(r))+')">响应</button></td>';
-        tr.onclick=function(){ showResp(null, logRows.indexOf(r)); };
-        tb.appendChild(tr);
+        var idx=logRows.indexOf(r), tr=document.createElement('tr');
+        tr.innerHTML='<td>'+(i+1)+'</td><td>'+r.method+'</td><td>'+r.url+'</td><td style="color:'+(r.ok?'#10b981':'#dc2626')+'">'+(r.status||'ERR')+'</td><td>'+r.ms.toFixed(1)+'ms</td><td>'+r.size+'B</td><td>'+r.time+'</td><td>t'+r.thr+'</td><td><span class="expander" onclick="toggleResp(event,'+idx+')">▶ 展开</span></td>';
+        var detail=document.createElement('tr');
+        detail.innerHTML='<td colspan="9"><div class="log-detail" id="detail_'+idx+'"></div></td>';
+        tb.appendChild(tr); tb.appendChild(detail);
+        tr.classList.add('has-detail'); tr.dataset.idx=idx;
     });
+    renderDetailLog();
 }
-
-function showResp(ev, idx){
-    if(ev){ ev.stopPropagation(); }
+function fmtResp(body){
+    if(body===undefined||body===null||body==='') return '(空)';
+    var out=body.length>8000?body.substring(0,8000)+'\n…(内容过长已截断)':body;
+    try{ out=JSON.stringify(JSON.parse(out),null,2); }catch(e){}
+    return out;
+}
+function toggleResp(ev, idx){
+    if(ev) ev.stopPropagation();
+    var d=document.getElementById('detail_'+idx); if(!d) return;
     var r=logRows[idx]; if(!r) return;
-    var body = r.resp && r.resp.length>4000 ? r.resp.substring(0,4000)+'...' : (r.resp||'(空)');
-    try{ body = JSON.stringify(JSON.parse(body),null,2); }catch(e){}
-    alert('第'+(idx+1)+'条响应内容：\n\n'+body);
+    if(d.innerHTML==='') d.textContent='【'+r.method+' '+r.url+'】 状态:'+(r.status||'ERR')+' · 耗时:'+r.ms.toFixed(1)+'ms · 大小:'+r.size+'B\n\n响应内容：\n'+fmtResp(r.resp);
+    var tr=d.closest('tr').previousElementSibling, open=tr.classList.toggle('open');
+    var exp=tr.querySelector('.expander'); if(exp) exp.textContent=open?'▼ 收起':'▶ 展开';
+    if(ev) ev.preventDefault();
 }
-
+function showResp(ev, idx){ toggleResp(ev, idx); }
+function renderDetailLog(){
+    var box=$('detailLogBox'); if(!box) return;
+    var kw=$('logSearch').value.trim().toLowerCase();
+    var rows=logRows.filter(function(r){
+        if(kw){ var hay=(r.method+' '+r.url+' '+r.status+' '+r.ms.toFixed(1)+' '+r.size+' '+(r.resp||'')).toLowerCase(); if(!hay.includes(kw))return false; }
+        return true;
+    });
+    var html='';
+    if(rows.length===0){ box.innerHTML='<div style="color:#94a3b8;padding:10px;">暂无日志，请先开始压测。</div>'; return; }
+    rows.slice().reverse().slice(0,80).forEach(function(r){
+        var st=r.status||'ERR';
+        var body=r.resp===undefined||r.resp===''?'(空)':(r.resp.length>12000?r.resp.substring(0,12000)+'\n…(已截断)':r.resp);
+        try{ body=JSON.stringify(JSON.parse(body),null,2); }catch(e){}
+        html+='<div class="log-item"><div class="log-head"><span>'+r.method+'</span><span style="color:'+(r.ok?'#16a34a':'#dc2626')+'">'+st+'</span><span>'+r.ms.toFixed(1)+'ms</span><span>'+r.size+'B</span><span>'+r.time+'</span><span>t'+r.thr+'</span></div><div class="log-body"><span class="log-url">'+esc(r.url)+'</span>\n\n'+esc(body)+'</div></div>';
+    });
+    box.innerHTML=html;
+}
 function runWorker(thr){
     var loop=function(){
         if(stopped)return;
         if(execMode==='iters' && thr>= (Number($('iterations').value)||1))return;
+        var et=Number($('execTimes').value)||0;
+        if(et>0 && stats.total>=et){ stopPress(); return; }
         fireRequest(thr).then(function(){
             windowCount++;
-            var th=Number($('think').value)||0;
-            setTimeout(loop,th);
+            var th=Number($('think').value)||0, ri=Number($('reqInterval').value)||0;
+            setTimeout(loop, th+ri);
         });
     };
     loop();
 }
-
 function startPress(){
     if(running)return;
     running=true; stopped=false;
@@ -458,7 +534,6 @@ function startPress(){
         if(stopped){ clearInterval(timerTick); finalize(); }
     },1000);
 }
-
 function stopPress(){
     if(!running)return;
     stopped=true; running=false;
@@ -466,28 +541,45 @@ function stopPress(){
     $('timerTxt').textContent='已结束';
     if(stats.total>0){
         roundNo++;
-        var el=(performance.now()-startTs)/1000;
-        var tb=$('roundBody');
-        var tr=document.createElement('tr');
+        var el=(performance.now()-startTs)/1000, tb=$('roundBody'), tr=document.createElement('tr');
         tr.innerHTML='<td>第'+roundNo+'轮</td><td>'+stats.total+'</td><td>'+stats.ok+'</td><td>'+stats.fail+'</td><td>'+(el>0?(stats.total/el).toFixed(1):'0')+'</td><td>'+(stats.total?(rtSamples.reduce(function(a,b){return a+b;},0)/stats.total).toFixed(1)+'ms':'--')+'</td><td>'+new Date().toLocaleTimeString()+'</td>';
         tb.prepend(tr);
     }
+    if(schedOn){
+        var sc=Number($('schedCount').value)||0;
+        if(sc>0 && roundNo>=sc){ schedStatus('✅ 定时任务已完成 '+roundNo+' 轮，自动停止。'); setTimeout(function(){ stopSched(); },400); }
+    }
 }
 function finalize(){ updateStats(); pushTrend(); drawDist(); renderLog(); }
-
+function schedStatus(msg){ var el=$('schedStatus'); if(el) el.innerHTML=msg; }
+function schedTick(){ startPress(); }
 function toggleSched(){
     if(schedOn){ stopSched(); return; }
-    var sec=Number($('intervalSec').value)||10;
+    var sec=Number($('intervalSec').value)||10, sc=Number($('schedCount').value)||0;
+    roundNo=0;
     schedOn=true; $('btnSched').textContent='停止定时';
     $('statusPill').textContent='定时中'; $('statusPill').style.background='#9333ea';
-    startPress();
-    schedTimer=setInterval(function(){ if(schedOn) startPress(); }, sec*1000);
+    if(schedMode==='interval'){
+        schedTick();
+        schedStatus('⏱ 按间隔模式运行中：每隔 '+sec+' 秒执行一轮'+(sc>0?'，共 '+sc+' 轮':'，一直执行')+'。');
+        schedTimer=setInterval(function(){ if(schedOn) schedTick(); }, sec*1000);
+    }else{
+        var h=Number($('clockHour').value)||0, m=Number($('clockMin').value)||0, s=Number($('clockSec').value)||0;
+        schedStatus('🕒 按时刻模式已开启：到达 '+pad(h)+':'+pad(m)+':'+pad(s)+' 自动执行'+(sc>0?'，共 '+sc+' 轮':'，每天该时刻执行')+'。');
+        clockTimer=setInterval(function(){
+            if(!schedOn){ clearInterval(clockTimer); return; }
+            var now=new Date();
+            if(now.getHours()===h && now.getMinutes()===m && now.getSeconds()===s) schedTick();
+        },1000);
+    }
 }
 function stopSched(){
-    schedOn=false; clearInterval(schedTimer);
+    schedOn=false; clearInterval(schedTimer); clearInterval(clockTimer);
+    schedTimer=null; clockTimer=null;
     $('btnSched').textContent='开启定时';
     if(running) stopPress();
     $('statusPill').textContent='就绪'; $('statusPill').style.background='#10b981';
+    schedStatus('定时已关闭。');
 }
 </script>
 </body>
