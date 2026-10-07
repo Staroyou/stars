@@ -3,20 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>鸿联九五 — 幸运大转盘活动</title>
-<meta name="description" content="鸿联九五 — 参与幸运大转盘抽奖，赢取小米汽车、iPhone 等大奖！">
-<meta name="keywords" content="抽奖,活动,大转盘,端午,小米汽车,iPhone">
+<title>鸿联九五 — 双十一购物狂欢节</title>
+<meta name="description" content="鸿联九五 — 双十一购物狂欢节幸运大转盘抽奖，赢取小米汽车、iPhone 等大奖！">
+<meta name="keywords" content="抽奖,活动,大转盘,双十一,购物狂欢节,小米汽车,iPhone">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23B3122B'/%3E%3Ccircle cx='32' cy='32' r='20' fill='%23F5C842'/%3E%3Ctext x='32' y='43' font-size='26' font-weight='700' text-anchor='middle' fill='%23B3122B' font-family='serif'%3E转%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&family=ZCOOL+KuaiLe&display=swap">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg0:#1A0A0A; --bg1:#2D0A0A; --bg2:#3D0F0F;
-  --gold:#F5C842; --gold-deep:#D4A017; --gold-dim:rgba(245,200,66,.35);
-  --red:#C41E3A; --red-bright:#FF2D55; --red-dark:#8B0000;
-  --cream:#FFF8E7; --cream-70:rgba(255,248,231,.7); --cream-50:rgba(255,248,231,.5);
+  --bg0:#FFEFF6; --bg1:#FFDEEB; --bg2:#FFCBE0;
+  --gold:#FF6FB5; --gold-deep:#E6458B; --gold-dim:rgba(255,111,181,.30);
+  --red:#FF5C9E; --red-bright:#FF7BBE; --red-dark:#D6336C;
+  --cream:#A1135B; --cream-70:rgba(161,19,91,.75); --cream-50:rgba(161,19,91,.58);
   --serif:'Noto Serif SC','Songti SC','STSong','SimSun',serif;
   --sans:'Noto Sans SC','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+  --cute:'ZCOOL KuaiLe','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
 }
 html{-webkit-text-size-adjust:100%}
 body{font-family:var(--sans);background:linear-gradient(180deg,var(--bg0),var(--bg1) 40%,var(--bg2));color:var(--cream);min-height:100vh;line-height:1.6}
@@ -30,36 +31,41 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .view.active{display:block;animation:viewIn .35s ease both}
 .wheel-view.active{display:flex}
 @keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 30px rgba(255,111,181,.35),0 0 70px rgba(255,92,158,.22)}50%{box-shadow:0 0 48px rgba(255,111,181,.6),0 0 100px rgba(255,92,158,.4)}}
+@keyframes floatUp{0%{transform:translateY(0) rotate(0) scale(.5);opacity:0}12%{opacity:.85}100%{transform:translateY(-140px) rotate(18deg) scale(1.2);opacity:0}}
+@keyframes btnBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.hero-floats{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+.hero-floats span{position:absolute;bottom:-60px;opacity:0;animation:floatUp linear infinite}
 
 .container{max-width:1080px;margin:0 auto;padding:0 20px}
 
 /* ===== 按钮 ===== */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font-weight:700;transition:transform .2s ease,box-shadow .2s ease,opacity .2s;white-space:nowrap}
 .btn:active{transform:scale(.97)}
-.btn-gold{background:linear-gradient(135deg,var(--gold-deep),var(--gold));color:#2D0A0A;box-shadow:0 2px 16px rgba(212,160,23,.45)}
+.btn-gold{background:linear-gradient(135deg,var(--gold-deep),var(--gold));color:#fff;box-shadow:0 2px 16px rgba(230,69,139,.45)}
 .btn-gold:hover{transform:scale(1.04)}
-.btn-red{background:linear-gradient(135deg,#C41E3A,#FF2D55);color:var(--cream);box-shadow:0 4px 24px rgba(196,30,58,.5),0 0 50px rgba(245,200,66,.18)}
+.btn-red{background:linear-gradient(135deg,#FF5C9E,#FF7BBE);color:#fff;box-shadow:0 4px 24px rgba(255,92,158,.5),0 0 50px rgba(255,111,181,.25)}
 .btn-red:hover{transform:scale(1.04)}
-.btn-ghost{background:rgba(255,248,231,.08);border:1px solid rgba(245,200,66,.35);color:var(--cream)}
-.btn-ghost:hover{background:rgba(255,248,231,.14)}
+.btn-ghost{background:rgba(255,255,255,.65);border:1px solid rgba(230,69,139,.4);color:var(--cream)}
+.btn-ghost:hover{background:rgba(255,255,255,.85)}
 .btn-lg{padding:15px 44px;font-size:18px}
 .btn-md{padding:10px 22px;font-size:15px}
 .btn[disabled],.btn.disabled{opacity:.55;cursor:not-allowed;transform:none!important;box-shadow:none}
 
 /* ===== 顶部导航 ===== */
 .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;max-width:1120px;margin:0 auto}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-weight:900;font-size:20px;color:var(--gold);text-shadow:0 0 12px rgba(245,200,66,.45)}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--cute);font-weight:900;font-size:20px;color:var(--gold-deep);text-shadow:0 0 12px rgba(255,111,181,.4)}
 .brand-logo{width:30px;height:30px;flex:0 0 auto}
 .brand-arrow{font-size:15px;font-family:var(--sans)}
 
 /* ===== Hero ===== */
 .hero{position:relative;overflow:hidden;text-align:center;padding:70px 20px 78px;
-  background:linear-gradient(180deg,rgba(26,10,10,.30),rgba(26,10,10,.52) 45%,rgba(26,10,10,.96)),
-    url('https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/JQipbxiruoHSD8xghmqca3mcnId') center 26%/cover no-repeat}
-.hero::before{content:"";position:absolute;left:50%;top:20px;transform:translateX(-50%);width:min(90vw,460px);height:420px;border-radius:50%;background:radial-gradient(circle,rgba(245,200,66,.20),transparent 65%);pointer-events:none}
+  background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.35) 45%,rgba(255,239,246,.94)),
+    url('https://aka.doubaocdn.com/s/U3QRpBCWj1') center 26%/cover no-repeat}
+.hero::before{content:"";position:absolute;left:50%;top:20px;transform:translateX(-50%);width:min(90vw,460px);height:420px;border-radius:50%;background:radial-gradient(circle,rgba(255,111,181,.22),transparent 65%);pointer-events:none}
 .hero>*{position:relative;z-index:1}
-.hero-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:999px;font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--gold);border:1px solid rgba(245,200,66,.4);background:rgba(26,10,10,.5);backdrop-filter:blur(6px)}
-.hero-title{font-family:var(--serif);font-weight:900;font-size:clamp(42px,11vw,66px);color:var(--gold);text-shadow:0 0 26px rgba(245,200,66,.55),0 3px 6px rgba(0,0,0,.55);margin:24px 0 14px;letter-spacing:.06em}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:999px;font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--gold-deep);border:1px solid rgba(230,69,139,.45);background:rgba(255,255,255,.72);backdrop-filter:blur(6px)}
+.hero-title{font-family:var(--cute);font-weight:900;font-size:clamp(42px,11vw,66px);color:var(--gold-deep);text-shadow:0 0 26px rgba(255,111,181,.35),0 3px 6px rgba(161,19,91,.15);margin:24px 0 14px;letter-spacing:.06em}
 .hero-sub{font-size:clamp(16px,4.2vw,20px);color:var(--cream);max-width:560px;margin:0 auto 32px}
 .hero-sub br{display:none}
 .hero-hint{margin-top:20px;font-size:13px;color:var(--cream-50);letter-spacing:.05em}
@@ -71,18 +77,18 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .section-eyebrow::before,.section-eyebrow::after{content:"";width:34px;height:1px}
 .section-eyebrow::before{background:linear-gradient(90deg,transparent,var(--gold-deep))}
 .section-eyebrow::after{background:linear-gradient(90deg,var(--gold-deep),transparent)}
-.section-title{font-family:var(--serif);font-weight:900;font-size:clamp(26px,6.5vw,34px);color:var(--gold);margin-top:12px;text-shadow:0 0 14px rgba(245,200,66,.3)}
+.section-title{font-family:var(--cute);font-weight:900;font-size:clamp(26px,6.5vw,34px);color:var(--gold-deep);margin-top:12px;text-shadow:0 0 14px rgba(255,111,181,.3)}
 
 /* ===== 奖品一览 ===== */
 .prize-grid{display:grid;grid-template-columns:1fr;gap:14px}
 @media(min-width:540px){.prize-grid{grid-template-columns:repeat(2,1fr);gap:16px}}
 @media(min-width:920px){.prize-grid{grid-template-columns:repeat(4,1fr);gap:20px}}
-.prize-card{text-align:center;padding:28px 16px 24px;border-radius:18px;background:linear-gradient(160deg,rgba(196,30,58,.28),rgba(139,0,0,.14));border:1px solid rgba(212,160,23,.32);box-shadow:0 6px 22px rgba(196,30,58,.18);transition:transform .25s ease}
+.prize-card{text-align:center;padding:28px 16px 24px;border-radius:18px;background:linear-gradient(160deg,rgba(255,111,181,.22),rgba(255,200,224,.30));border:1px solid rgba(230,69,139,.35);box-shadow:0 6px 22px rgba(255,111,181,.18);transition:transform .25s ease}
 .prize-card:hover{transform:translateY(-4px) scale(1.02)}
-.prize-icon{width:54px;height:54px;margin:0 auto 14px;padding:12px;border-radius:16px;color:var(--gold);background:rgba(245,200,66,.12);border:1px solid rgba(245,200,66,.32)}
+.prize-icon{width:54px;height:54px;margin:0 auto 14px;padding:12px;border-radius:16px;color:var(--gold-deep);background:rgba(255,111,181,.14);border:1px solid rgba(230,69,139,.35)}
 .prize-level{font-size:12px;font-weight:800;letter-spacing:.24em;color:var(--gold-deep);margin-bottom:6px}
 .prize-name{font-family:var(--serif);font-weight:700;font-size:17px;color:var(--cream);margin-bottom:12px;line-height:1.35}
-.prize-quota{display:inline-block;font-size:12px;padding:4px 13px;border-radius:999px;color:var(--gold);background:rgba(212,160,23,.16);border:1px solid rgba(212,160,23,.35)}
+.prize-quota{display:inline-block;font-size:12px;padding:4px 13px;border-radius:999px;color:var(--gold-deep);background:rgba(255,111,181,.16);border:1px solid rgba(230,69,139,.4)}
 
 /* ===== 参与流程 ===== */
 .steps{display:grid}
@@ -91,8 +97,8 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 @media(min-width:760px){.step{flex-direction:column;align-items:center;text-align:center;padding:0 10px}}
 .step-rail{flex:0 0 auto;width:56px;display:flex;flex-direction:column;align-items:center}
 @media(min-width:760px){.step-rail{width:auto}}
-.step-dot{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);background:linear-gradient(135deg,#C41E3A,#8B0000);box-shadow:0 4px 14px rgba(196,30,58,.4);border:1px solid rgba(245,200,66,.4);z-index:1}
-.step-line{flex:1;width:2px;margin-top:6px;background:linear-gradient(180deg,rgba(245,200,66,.5),rgba(245,200,66,.1))}
+.step-dot{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,#FF7BBE,#D6336C);box-shadow:0 4px 14px rgba(255,92,158,.4);border:1px solid rgba(255,255,255,.6);z-index:1}
+.step-line{flex:1;width:2px;margin-top:6px;background:linear-gradient(180deg,rgba(255,111,181,.5),rgba(255,111,181,.1))}
 @media(min-width:760px){.step-line{display:none}}
 .step-body{flex:1;min-width:0}
 @media(min-width:760px){.step-body{margin-top:16px}}
@@ -101,60 +107,83 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .step-desc{font-size:14px;color:var(--cream-70)}
 
 /* ===== 活动规则 ===== */
-.rules-card{max-width:640px;margin:0 auto;border-radius:20px;padding:30px 26px;background:linear-gradient(160deg,rgba(196,30,58,.16),rgba(139,0,0,.1));border:1px solid rgba(212,160,23,.22);backdrop-filter:blur(8px)}
+.rules-card{max-width:640px;margin:0 auto;border-radius:20px;padding:30px 26px;background:linear-gradient(160deg,rgba(255,111,181,.16),rgba(255,200,224,.24));border:1px solid rgba(230,69,139,.28);backdrop-filter:blur(8px)}
 .rule{display:flex;gap:12px;padding:9px 0;font-size:14.5px;color:var(--cream)}
-.rule-num{flex:0 0 22px;height:22px;margin-top:1px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#2D0A0A;background:linear-gradient(135deg,var(--gold-deep),var(--gold))}
+.rule-num{flex:0 0 22px;height:22px;margin-top:1px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;background:linear-gradient(135deg,#FF7BBE,#D6336C)}
 
 /* ===== 主办方联系 ===== */
 .contact{padding:58px 0 64px;text-align:center}
-.contact-card{display:inline-flex;flex-direction:column;align-items:center;gap:6px;padding:32px 46px;border-radius:20px;background:linear-gradient(160deg,rgba(212,160,23,.16),rgba(245,200,66,.08));border:1px solid rgba(212,160,23,.34)}
+.contact-card{display:inline-flex;flex-direction:column;align-items:center;gap:6px;padding:32px 46px;border-radius:20px;background:linear-gradient(160deg,rgba(255,111,181,.18),rgba(255,200,224,.22));border:1px solid rgba(230,69,139,.36)}
 .contact-label{font-size:13px;color:var(--cream-70)}
 .contact-id{font-family:var(--serif);font-weight:900;font-size:30px;letter-spacing:.1em;color:var(--gold);text-shadow:0 0 14px rgba(245,200,66,.35)}
 .contact-sub{font-size:12px;color:var(--cream-50);margin-bottom:8px}
-.contact-copy{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-size:13px;font-weight:700;color:#2D0A0A;background:linear-gradient(135deg,var(--gold-deep),var(--gold))}
+.contact-copy{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,#FF7BBE,#D6336C)}
 .contact-copy:hover{filter:brightness(1.08)}
 
 /* ===== 页脚 ===== */
 .footer{text-align:center;padding:6px 20px 26px;font-size:12px;color:var(--cream-50)}
 
 /* ===== 转盘视图 ===== */
-.wheel-view{min-height:100vh;flex-direction:column;background:radial-gradient(900px 480px at 50% -80px,rgba(245,200,66,.16),transparent 60%),linear-gradient(180deg,var(--bg0),var(--bg1) 55%,var(--bg2))}
+.wheel-view{min-height:100vh;flex-direction:column;background:radial-gradient(900px 480px at 50% -80px,rgba(255,111,181,.22),transparent 60%),linear-gradient(180deg,var(--bg0),var(--bg1) 55%,var(--bg2))}
 .wheel-top{position:relative;text-align:center;padding:38px 20px 8px}
-.back-btn{position:absolute;left:16px;top:34px;display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:999px;font-size:13.5px;font-weight:700;color:#FFB3C1;background:rgba(255,248,231,.08);border:1px solid rgba(245,200,66,.35);transition:background .2s}
-.back-btn:hover{background:rgba(255,248,231,.16)}
+.back-btn{position:absolute;left:16px;top:34px;display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:999px;font-size:13.5px;font-weight:700;color:var(--gold-deep);background:rgba(255,255,255,.7);border:1px solid rgba(230,69,139,.4);transition:background .2s}
+.back-btn:hover{background:rgba(255,255,255,.9)}
 .wheel-title{font-family:var(--serif);font-weight:900;font-size:clamp(27px,7.5vw,36px);color:var(--gold);text-shadow:0 0 18px rgba(245,200,66,.45);letter-spacing:.05em}
 .wheel-sub{font-size:14px;color:var(--cream-70);margin-top:5px}
 .wheel-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 20px 44px}
 .wheel-wrap{position:relative;width:min(80vw,340px);aspect-ratio:1;margin-top:8px}
-.wheel-frame{position:absolute;inset:-16px;border-radius:50%;background:conic-gradient(from 30deg,#F5C842,#C41E3A,#8B0000,#F5C842);padding:6px;box-shadow:0 0 46px rgba(245,200,66,.42),0 0 90px rgba(196,30,58,.35)}
-.wheel-frame::before{content:"";position:absolute;inset:6px;border-radius:50%;background:radial-gradient(circle at 50% 32%,#431111,#200808 78%)}
+.wheel-frame{position:absolute;inset:-16px;border-radius:50%;background:conic-gradient(from 30deg,#FF9CCD,#FF5C9E,#D6336C,#FF9CCD);padding:6px;box-shadow:0 0 46px rgba(255,111,181,.4),0 0 90px rgba(255,92,158,.32);animation:glowPulse 3s ease-in-out infinite}
+.wheel-frame::before{content:"";position:absolute;inset:6px;border-radius:50%;background:radial-gradient(circle at 50% 32%,#FFE3F0,#FFCBE0 78%)}
 .rotor{position:absolute;inset:6px;border-radius:50%;overflow:hidden;transform:rotate(0deg);will-change:transform}
 .rotor svg{width:100%;height:100%;display:block}
 .pointer{position:absolute;top:-22px;left:50%;transform:translateX(-50%);z-index:6;width:40px;height:44px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.45))}
-.spin-btn{margin-top:34px}
+/* 修正箭头方向：指向转盘内部 */
+.pointer svg{transform:rotate(180deg)}
+.spin-btn{margin-top:34px;animation:btnBounce 2.2s ease-in-out infinite}
 .wheel-note{margin-top:16px;font-size:12.5px;color:var(--cream-50);letter-spacing:.05em}
 .wheel-footer{padding:14px 20px 22px;text-align:center;font-size:12px;color:var(--cream-50)}
 
 /* ===== 结果弹窗 ===== */
-.modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(15,4,4,.74);backdrop-filter:blur(6px)}
+.modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(255,222,238,.55);backdrop-filter:blur(6px)}
 .modal[hidden]{display:none}
-.modal-card{width:min(92vw,370px);text-align:center;border-radius:24px;padding:38px 26px 28px;background:linear-gradient(170deg,#3D0F0F,#240909);border:1px solid rgba(245,200,66,.42);box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 70px rgba(245,200,66,.14);animation:pop .35s cubic-bezier(.2,1.4,.4,1) both}
+.modal-card{width:min(92vw,370px);text-align:center;border-radius:24px;padding:38px 26px 28px;background:linear-gradient(170deg,#FFE3F0,#FFD0E4);border:1px solid rgba(230,69,139,.4);box-shadow:0 20px 60px rgba(230,69,139,.25),0 0 70px rgba(255,111,181,.16);animation:pop .35s cubic-bezier(.2,1.4,.4,1) both}
 @keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
-.modal-icon{width:78px;height:78px;margin:0 auto 18px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);background:radial-gradient(circle at 35% 30%,rgba(245,200,66,.28),rgba(196,30,58,.28));border:1px solid rgba(245,200,66,.45)}
+.modal-icon{width:78px;height:78px;margin:0 auto 18px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-deep);background:radial-gradient(circle at 35% 30%,rgba(255,111,181,.28),rgba(214,51,108,.28));border:1px solid rgba(230,69,139,.5)}
 .modal-title{font-family:var(--serif);font-weight:900;font-size:25px;color:var(--gold)}
 .modal-prize{margin-top:9px;font-size:19px;font-weight:700;color:var(--cream)}
 .modal-desc{margin-top:10px;font-size:14px;color:var(--cream-70);line-height:1.7}
-.modal-contact{margin:18px auto 0;padding:13px 15px;border-radius:12px;background:rgba(212,160,23,.12);border:1px dashed rgba(245,200,66,.45);font-size:13px;color:var(--cream-70);line-height:1.7;text-align:left}
+.modal-contact{margin:18px auto 0;padding:13px 15px;border-radius:12px;background:rgba(255,111,181,.12);border:1px dashed rgba(230,69,139,.5);font-size:13px;color:var(--cream-70);line-height:1.7;text-align:left}
 .modal-contact b{color:var(--gold)}
 .modal .btn{margin-top:24px;width:100%}
 
 /* ===== Toast ===== */
-.toast{position:fixed;left:50%;top:22px;transform:translateX(-50%);z-index:60;padding:10px 20px;border-radius:999px;background:rgba(43,14,14,.94);border:1px solid rgba(245,200,66,.5);color:var(--gold);font-size:14px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.45);white-space:nowrap}
+.toast{position:fixed;left:50%;top:22px;transform:translateX(-50%);z-index:60;padding:10px 20px;border-radius:999px;background:rgba(255,239,246,.96);border:1px solid rgba(230,69,139,.5);color:var(--gold-deep);font-size:14px;font-weight:700;box-shadow:0 8px 24px rgba(230,69,139,.25);white-space:nowrap}
 .toast[hidden]{display:none}
 
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition-duration:.01ms!important}
 }
+
+/* ===== 订单表单 & 按IP查询 ===== */
+.order-form{display:flex;flex-direction:column;gap:11px;margin-top:14px;text-align:left}
+.order-field{display:flex;flex-direction:column;gap:5px}
+.order-field label{font-size:13px;font-weight:700;color:var(--gold-deep)}
+.order-field input,.order-field textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(230,69,139,.4);background:#fff;color:#A1135B;font-size:14px;font-family:inherit;outline:none}
+.order-field input:focus,.order-field textarea:focus{border-color:var(--gold-deep);box-shadow:0 0 0 3px rgba(255,111,181,.15)}
+.query-row input{flex:1;min-width:0;padding:10px 12px;border-radius:10px;border:1px solid rgba(230,69,139,.4);background:#fff;color:#A1135B;font-size:14px;font-family:inherit;outline:none}
+.query-row input:focus{border-color:var(--gold-deep);box-shadow:0 0 0 3px rgba(255,111,181,.15)}
+.query-row .btn{width:auto;flex:0 0 auto;margin-top:0;padding:10px 20px;min-width:76px}
+.order-submit{width:100%}
+.order-note{font-size:12px;color:var(--cream-70);margin-top:2px;text-align:center}
+.query-row{display:flex;gap:8px;margin-top:12px}
+.query-row input{flex:1}
+.query-ip-hint{font-size:12px;color:var(--cream-70);margin-top:8px;text-align:center}
+.query-ip-hint b{color:var(--gold-deep)}
+.query-result{margin-top:14px;text-align:left;max-height:230px;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.query-item{background:rgba(255,255,255,.65);border:1px solid rgba(230,69,139,.25);border-radius:12px;padding:11px 13px;font-size:13.5px;color:var(--cream);line-height:1.7}
+.query-item b{color:var(--gold-deep)}
+.iptag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:999px;background:rgba(255,111,181,.15);color:var(--gold-deep);border:1px solid rgba(230,69,139,.3)}
+.query-empty{text-align:center;color:var(--cream-70);font-size:14px;padding:14px 0}
 </style>
 </head>
 <body>
@@ -170,21 +199,23 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
       </svg>
       <span>鸿联九五</span>
     </a>
+    <button class="btn btn-ghost btn-md" id="nav-query-btn" type="button" style="margin-right:10px">查询订单</button>
     <a class="btn btn-gold btn-md" href="#/wheel">立即抽奖 <span class="brand-arrow">→</span></a>
   </nav>
 
   <header class="hero">
     <span class="hero-badge">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 4.6 5 .4-3.8 3.3 1.1 4.9L12 13.6 7.8 16.2l1.1-4.9L5.1 8l5-.4z"/></svg>
-      端午限定 · 幸运大转盘
+      双十一购物狂欢节 · 幸运大转盘
     </span>
     <h1 class="hero-title">鸿联九五</h1>
-    <p class="hero-sub">幸运大转盘，转出你的精彩人生！<br>小米汽车、iPhone 等超值大奖等你来拿！</p>
+    <p class="hero-sub">双十一购物狂欢节，转出你的好运大奖！<br>小米汽车、iPhone 等超值大奖等你来拿！</p>
     <a class="btn btn-red btn-lg" href="#/wheel">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v5.1M12 15.5v5.1M3.4 12h5.1M15.5 12h5.1M6.4 6.4l3.6 3.6M14 14l3.6 3.6M17.6 6.4L14 10M10 14l-3.6 3.6"/></svg>
       立即参与抽奖
     </a>
     <p class="hero-hint">每人限一次抽奖机会 · 结果随机 · 中奖实物寄送</p>
+<div class="hero-floats" aria-hidden="true"><span style="left:6%;animation-duration:6s;animation-delay:0s"><svg width="30" height="30" viewBox="0 0 24 24" fill="#FF7BBE"><path d="M12 21s-7.5-4.7-9.5-9A5.2 5.2 0 0 1 12 5.5 5.2 5.2 0 0 1 21.5 12c-2 4.3-9.5 9-9.5 9z"/></svg></span><span style="left:18%;animation-duration:7.5s;animation-delay:1.2s"><svg width="20" height="20" viewBox="0 0 24 24" fill="#FF9CD2"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg></span><span style="left:35%;animation-duration:6.5s;animation-delay:2.1s"><svg width="30" height="30" viewBox="0 0 24 24" fill="#FF7BBE"><path d="M12 21s-7.5-4.7-9.5-9A5.2 5.2 0 0 1 12 5.5 5.2 5.2 0 0 1 21.5 12c-2 4.3-9.5 9-9.5 9z"/></svg></span><span style="left:50%;animation-duration:8s;animation-delay:.6s"><svg width="20" height="20" viewBox="0 0 24 24" fill="#FF9CD2"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg></span><span style="left:66%;animation-duration:6.8s;animation-delay:1.8s"><svg width="30" height="30" viewBox="0 0 24 24" fill="#FF7BBE"><path d="M12 21s-7.5-4.7-9.5-9A5.2 5.2 0 0 1 12 5.5 5.2 5.2 0 0 1 21.5 12c-2 4.3-9.5 9-9.5 9z"/></svg></span><span style="left:80%;animation-duration:7s;animation-delay:.3s"><svg width="20" height="20" viewBox="0 0 24 24" fill="#FF9CD2"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg></span><span style="left:92%;animation-duration:6.2s;animation-delay:2.6s"><svg width="30" height="30" viewBox="0 0 24 24" fill="#FF7BBE"><path d="M12 21s-7.5-4.7-9.5-9A5.2 5.2 0 0 1 12 5.5 5.2 5.2 0 0 1 21.5 12c-2 4.3-9.5 9-9.5 9z"/></svg></span></div>
   </header>
 
   <main class="container">
@@ -314,11 +345,12 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           复制微信号
         </button>
+        <button class="btn btn-ghost btn-md" id="contact-query-btn" type="button" style="margin-top:14px">查询订单（按IP）</button>
       </div>
     </section>
   </main>
 
-  <footer class="footer">© 2026 鸿联九五 · 幸运抽奖活动</footer>
+  <footer class="footer">© 2026 鸿联九五 · 双十一购物狂欢节</footer>
 </div>
 
 <!-- ===== 视图：幸运大转盘 ===== -->
@@ -328,8 +360,8 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
       返回
     </button>
-    <h1 class="wheel-title">幸运大转盘</h1>
-    <p class="wheel-sub">点击按钮，转出你的好运～</p>
+    <h1 class="wheel-title">双十一幸运大转盘</h1>
+    <p class="wheel-sub">点击按钮，转出你的双十一好运～</p>
   </header>
 
   <main class="wheel-stage">
@@ -337,60 +369,60 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
       <div class="wheel-frame"></div>
       <div class="pointer" aria-hidden="true">
         <svg viewBox="0 0 40 46">
-          <path d="M20 2 38 42a3 3 0 0 1-2.7 4H4.7A3 3 0 0 1 2 42Z" fill="#F5C842" stroke="#8B0000" stroke-width="1.5"/>
-          <path d="M20 8 33.6 42H6.4Z" fill="#C41E3A"/>
+          <path d="M20 2 38 42a3 3 0 0 1-2.7 4H4.7A3 3 0 0 1 2 42Z" fill="#FF9CD2" stroke="#D6336C" stroke-width="1.5"/>
+          <path d="M20 8 33.6 42H6.4Z" fill="#FF5C9E"/>
         </svg>
       </div>
       <div class="rotor" id="rotor">
         <svg viewBox="0 0 100 100" role="img" aria-label="幸运大转盘">
           <!-- 扇区 -->
           <g>
-            <path d="M 50 50 L 50 0 A 50 50 0 0 1 85.355 14.645 Z" fill="#B3122B"/>
-            <g transform="rotate(22.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#FFF8E7" font-size="3.4" font-weight="bold">特等奖</text><text x="50" y="29" text-anchor="middle" fill="#FFF8E7" font-size="2.5">小米汽车</text></g>
+            <path d="M 50 50 L 50 0 A 50 50 0 0 1 85.355 14.645 Z" fill="#FF5C9E"/>
+            <g transform="rotate(22.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#FFFFFF" font-size="3.4" font-weight="bold">特等奖</text><text x="50" y="29" text-anchor="middle" fill="#FFF8E7" font-size="2.5">小米汽车</text></g>
           </g>
           <g>
-            <path d="M 50 50 L 85.355 14.645 A 50 50 0 0 1 100 50 Z" fill="#6E1A20"/>
-            <g transform="rotate(67.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#F5C842" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
+            <path d="M 50 50 L 85.355 14.645 A 50 50 0 0 1 100 50 Z" fill="#FFD6E8"/>
+            <g transform="rotate(67.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#A1135B" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
           </g>
           <g>
-            <path d="M 50 50 L 100 50 A 50 50 0 0 1 85.355 85.355 Z" fill="#D4A017"/>
-            <g transform="rotate(112.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#3A2400" font-size="3.4" font-weight="bold">一等奖</text><text x="50" y="29" text-anchor="middle" fill="#3A2400" font-size="2.5">iPhone Duo</text></g>
+            <path d="M 50 50 L 100 50 A 50 50 0 0 1 85.355 85.355 Z" fill="#FF8FC7"/>
+            <g transform="rotate(112.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#FFFFFF" font-size="3.4" font-weight="bold">一等奖</text><text x="50" y="29" text-anchor="middle" fill="#3A2400" font-size="2.5">iPhone Duo</text></g>
           </g>
           <g>
-            <path d="M 50 50 L 85.355 85.355 A 50 50 0 0 1 50 100 Z" fill="#7A1E24"/>
-            <g transform="rotate(157.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#F5C842" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
+            <path d="M 50 50 L 85.355 85.355 A 50 50 0 0 1 50 100 Z" fill="#FFE3F0"/>
+            <g transform="rotate(157.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#A1135B" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
           </g>
           <g>
-            <path d="M 50 50 L 50 100 A 50 50 0 0 1 14.645 85.355 Z" fill="#C41E3A"/>
-            <g transform="rotate(202.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#FFF8E7" font-size="3.4" font-weight="bold">二等奖</text><text x="50" y="29" text-anchor="middle" fill="#FFF8E7" font-size="2.5">18 Pro Max</text></g>
+            <path d="M 50 50 L 50 100 A 50 50 0 0 1 14.645 85.355 Z" fill="#FF7BBE"/>
+            <g transform="rotate(202.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#FFFFFF" font-size="3.4" font-weight="bold">二等奖</text><text x="50" y="29" text-anchor="middle" fill="#FFF8E7" font-size="2.5">18 Pro Max</text></g>
           </g>
           <g>
-            <path d="M 50 50 L 14.645 85.355 A 50 50 0 0 1 0 50 Z" fill="#6E1A20"/>
-            <g transform="rotate(247.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#F5C842" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
+            <path d="M 50 50 L 14.645 85.355 A 50 50 0 0 1 0 50 Z" fill="#FFD6E8"/>
+            <g transform="rotate(247.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#A1135B" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
           </g>
           <g>
-            <path d="M 50 50 L 0 50 A 50 50 0 0 1 14.645 14.645 Z" fill="#E8B33D"/>
-            <g transform="rotate(292.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#3A2400" font-size="3.4" font-weight="bold">三等奖</text><text x="50" y="29" text-anchor="middle" fill="#3A2400" font-size="2.5">iPhone 18 Pro</text></g>
+            <path d="M 50 50 L 0 50 A 50 50 0 0 1 14.645 14.645 Z" fill="#FF9CD2"/>
+            <g transform="rotate(292.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#FFFFFF" font-size="3.4" font-weight="bold">三等奖</text><text x="50" y="29" text-anchor="middle" fill="#3A2400" font-size="2.5">iPhone 18 Pro</text></g>
           </g>
           <g>
-            <path d="M 50 50 L 14.645 14.645 A 50 50 0 0 1 50 0 Z" fill="#7A1E24"/>
-            <g transform="rotate(337.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#F5C842" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
+            <path d="M 50 50 L 14.645 14.645 A 50 50 0 0 1 50 0 Z" fill="#FFCBE0"/>
+            <g transform="rotate(337.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#A1135B" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
           </g>
           <!-- 边缘灯珠 -->
-          <g fill="#F5C842" opacity=".85">
-            <circle cx="102" cy="50" r="1.4"/><circle cx="98.04" cy="69.9" r="1.4" fill="#FF6B6B"/><circle cx="86.76" cy="86.76" r="1.4"/><circle cx="69.9" cy="98.04" r="1.4" fill="#FF6B6B"/>
+          <g fill="#FF9CD2" opacity=".9">
+            <circle cx="102" cy="50" r="1.4"/><circle cx="98.04" cy="69.9" r="1.4" fill="#FF5C9E"/><circle cx="86.76" cy="86.76" r="1.4"/><circle cx="69.9" cy="98.04" r="1.4" fill="#FF6B6B"/>
             <circle cx="50" cy="102" r="1.4"/><circle cx="30.1" cy="98.04" r="1.4" fill="#FF6B6B"/><circle cx="13.24" cy="86.76" r="1.4"/><circle cx="1.96" cy="69.9" r="1.4" fill="#FF6B6B"/>
             <circle cx="-2" cy="50" r="1.4"/><circle cx="1.96" cy="30.1" r="1.4" fill="#FF6B6B"/><circle cx="13.24" cy="13.24" r="1.4"/><circle cx="30.1" cy="1.96" r="1.4" fill="#FF6B6B"/>
             <circle cx="50" cy="-2" r="1.4"/><circle cx="69.9" cy="1.96" r="1.4" fill="#FF6B6B"/><circle cx="86.76" cy="13.24" r="1.4"/><circle cx="98.04" cy="30.1" r="1.4" fill="#FF6B6B"/>
           </g>
           <!-- 中心轴 -->
           <circle cx="50" cy="50" r="9.5" fill="url(#hubGrad)"/>
-          <circle cx="50" cy="50" r="6" fill="#FFF8E7" opacity=".22"/>
-          <text x="50" y="55" text-anchor="middle" fill="#2D0A0A" font-size="6.4" font-weight="bold" font-family="serif">转</text>
+          <circle cx="50" cy="50" r="6" fill="#FFFFFF" opacity=".30"/>
+          <text x="50" y="55" text-anchor="middle" fill="#A1135B" font-size="6.4" font-weight="bold" font-family="serif">转</text>
           <defs>
             <radialGradient id="hubGrad" cx="35%" cy="30%" r="80%">
-              <stop offset="0%" stop-color="#FFD54A"/>
-              <stop offset="100%" stop-color="#C41E3A"/>
+              <stop offset="0%" stop-color="#FFD6E8"/>
+              <stop offset="100%" stop-color="#FF7BBE"/>
             </radialGradient>
           </defs>
         </svg>
@@ -404,7 +436,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     <p class="wheel-note" id="chance-note">每人仅一次抽奖机会，请珍惜使用</p>
   </main>
 
-  <footer class="wheel-footer">鸿联九五 · 幸运大转盘活动</footer>
+  <footer class="wheel-footer">鸿联九五 · 双十一购物狂欢节</footer>
 </div>
 
 <!-- ===== 结果弹窗 ===== -->
@@ -417,7 +449,32 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     <p class="modal-contact" id="modal-contact" hidden>
       中奖后请添加主办方微信 <b>CAI-YUXIN-</b>，登记收货信息（姓名 / 手机号 / 收货地址），奖品将在活动结束后 15 个工作日内寄出。
     </p>
+    <div class="order-form" id="order-form" hidden>
+      <div class="order-field"><label>收货人姓名</label><input id="of-name" maxlength="30" placeholder="请输入真实姓名"/></div>
+      <div class="order-field"><label>手机号码</label><input id="of-phone" type="tel" maxlength="11" placeholder="请输入11位手机号"/></div>
+      <div class="order-field"><label>收货地址</label><textarea id="of-addr" rows="2" placeholder="省市区 + 详细街道门牌号"></textarea></div>
+      <button class="btn btn-red btn-md order-submit" id="order-submit" type="button">提交订单</button>
+      <p class="order-note">提交后将生成订单号，可凭 IP 查询订单</p>
+    </div>
     <button class="btn btn-gold btn-md" id="modal-close" type="button">知道了</button>
+  </div>
+</div>
+
+<!-- ===== 查询订单弹窗（按IP） ===== -->
+<div class="modal" id="query-modal" hidden role="dialog" aria-modal="true" aria-labelledby="query-title">
+  <div class="modal-card">
+    <div class="modal-icon">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7.2"/><path d="M16.5 16.5 21 21"/></svg>
+    </div>
+    <h2 class="modal-title" id="query-title">查询订单</h2>
+    <p class="modal-desc" style="margin-top:4px">按单个 IP 查询中奖订单</p>
+    <div class="query-row">
+      <input id="query-ip" placeholder="请输入订单号 或 IP 地址" />
+      <button class="btn btn-gold btn-md" id="query-do" type="button">查询</button>
+    </div>
+    <p class="query-ip-hint">当前设备 IP：<b id="my-ip">获取中…</b>，可输入订单号或 IP 查询</p>
+    <div class="query-result" id="query-result"></div>
+    <button class="btn btn-gold btn-md" id="query-close" type="button" style="width:100%;margin-top:6px">关闭</button>
   </div>
 </div>
 
@@ -522,18 +579,21 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
   function showResult(seg){
     var icon = $('modal-icon'), title = $('modal-title'), prize = $('modal-prize'),
         desc = $('modal-desc'), contact = $('modal-contact');
+    var of = $('order-form');
     if (seg.t === '幸运奖'){
       icon.innerHTML = STAR_ICON;
       title.textContent = '很遗憾，未中奖';
       prize.textContent = '谢谢参与';
-      desc.textContent = '这次差一点点，感谢你的参与，祝你端午安康～';
+      desc.textContent = '这次差一点点，感谢你的参与，祝你双十一购物愉快～';
       contact.hidden = true;
+      if(of) of.hidden = true;
     } else {
       icon.innerHTML = GIFT_ICON;
       title.textContent = '恭喜中奖！';
       prize.textContent = seg.t + ' · ' + seg.n;
-      desc.textContent = '你抽中了「' + seg.n + '」，快去登记收货信息吧！';
+      desc.textContent = '你抽中了「' + seg.n + '」，请填写收货信息完成登记';
       contact.hidden = false;
+      if(of) of.hidden = false;
     }
     modal.hidden = false;
   }
@@ -541,6 +601,90 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
   $('modal-close').addEventListener('click', function(){ modal.hidden = true; });
   modal.addEventListener('click', function(e){ if (e.target === modal) modal.hidden = true; });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !modal.hidden) modal.hidden = true; });
+
+  /* ===== 中奖订单：填写地址 + 按IP查询 ===== */
+  var ORDER_KEY = 'hl95_orders_v1';
+  var IP_KEY = 'hl95_myip_v1';
+  function getOrders(){ try{ return JSON.parse(localStorage.getItem(ORDER_KEY)) || []; }catch(e){ return []; } }
+  function saveOrders(list){ localStorage.setItem(ORDER_KEY, JSON.stringify(list)); }
+  var myIP = localStorage.getItem(IP_KEY) || '';
+  try{
+    fetch('https://api.ipify.org?format=json').then(function(r){ return r.json(); })
+      .then(function(d){ if(d && d.ip){ myIP = d.ip; localStorage.setItem(IP_KEY, myIP); } })
+      .catch(function(){});
+  }catch(e){}
+  function pad(n){ return (n<10?'0':'')+n; }
+  function genOrderNo(){
+    var d = new Date();
+    return 'HL' + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate())
+      + pad(d.getHours()) + pad(d.getMinutes()) + pad(d.getSeconds())
+      + Math.floor(100+Math.random()*900);
+  }
+  function curTimeStr(){
+    var d = new Date();
+    return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+  }
+  function validPhone(s){ return /^1[3-9]\d{9}$/.test(s.replace(/\s/g,'')); }
+
+  $('order-submit').addEventListener('click', function(){
+    var prizeText = $('modal-prize').textContent || '';
+    var titleText = $('modal-title').textContent || '';
+    if(prizeText.indexOf('谢谢参与') !== -1 || titleText.indexOf('很遗憾') !== -1){
+      toast('未中奖，无法填写收货地址'); return;
+    }
+    var name = $('of-name').value.trim();
+    var phone = $('of-phone').value.trim();
+    var addr = $('of-addr').value.trim();
+    if(!name){ toast('请填写收货人姓名'); return; }
+    if(!validPhone(phone)){ toast('请填写正确的11位手机号'); return; }
+    if(addr.length < 6){ toast('请填写完整收货地址'); return; }
+    var win = $('modal-prize').textContent;
+    var order = { orderNo: genOrderNo(), ip: myIP, prize: win, name: name, phone: phone, address: addr, time: curTimeStr() };
+    var list = getOrders(); list.push(order); saveOrders(list);
+    $('order-form').innerHTML =
+      '<div style="text-align:center;padding:6px 0">'
+      + '<div style="font-size:16px;font-weight:700;color:var(--gold-deep)">订单提交成功</div>'
+      + '<p style="font-size:13px;color:var(--cream-70);margin-top:8px">订单号：<b style="color:var(--gold-deep)">' + order.orderNo + '</b></p>'
+      + '<p style="font-size:12px;color:var(--cream-70);margin-top:4px">奖品将在活动结束后15个工作日内寄出</p>'
+      + '</div>';
+    toast('提交成功，订单号：' + order.orderNo);
+  });
+
+  var qModal = $('query-modal');
+  function openQuery(){
+    var ipEl = $('my-ip'); if(ipEl) ipEl.textContent = myIP || '获取中…';
+    $('query-ip').value = myIP;
+    $('query-result').innerHTML = '';
+    qModal.hidden = false;
+  }
+  function bindQueryOpen(id){ $(id).addEventListener('click', openQuery); }
+  bindQueryOpen('nav-query-btn');
+  bindQueryOpen('contact-query-btn');
+  $('query-close').addEventListener('click', function(){ qModal.hidden = true; });
+  qModal.addEventListener('click', function(e){ if(e.target === qModal) qModal.hidden = true; });
+
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  $('query-do').addEventListener('click', function(){
+    var kw = $('query-ip').value.trim();
+    if(!kw){ toast('请输入订单号 或 IP 地址'); return; }
+    var list = getOrders().filter(function(o){ return o.orderNo === kw || o.ip === kw; });
+    var box = $('query-result');
+    if(list.length === 0){ box.innerHTML = '<div class="query-empty">未查询到该IP的订单</div>'; return; }
+    var html = '';
+    for(var i=list.length-1; i>=0; i--){
+      var o = list[i];
+      html += '<div class="query-item">'
+        + '<div><b>订单号：</b>' + esc(o.orderNo) + ' <span class="iptag">' + esc(o.ip) + '</span></div>'
+        + '<div><b>奖品：</b>' + esc(o.prize) + '</div>'
+        + '<div><b>收货人：</b>' + esc(o.name) + '　<b>电话：</b>' + esc(o.phone) + '</div>'
+        + '<div><b>地址：</b>' + esc(o.address) + '</div>'
+        + '<div style="color:var(--cream-50);font-size:12px;margin-top:4px">' + esc(o.time) + '</div>'
+        + '</div>';
+    }
+    box.innerHTML = html;
+  });
+  $('query-ip').addEventListener('keydown', function(e){ if(e.key === 'Enter'){ $('query-do').click(); } });
+
 })();
 </script>
 </body>
