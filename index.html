@@ -1,586 +1,547 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stars - 并发测试工具 · 综合版</title>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-    <style>
-        * { box-sizing:border-box; margin:0; padding:0; font-family:system-ui,-apple-system,sans-serif; }
-        body { background:#f3f4f6; padding:12px; max-width:900px; margin:0 auto; }
-        header { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
-        header h1 { font-size:21px; }
-        header .sub { color:#777; font-size:12px; }
-        .pill { background:#10b981; color:#fff; padding:4px 12px; border-radius:999px; font-size:12px; }
-        .tip { background:#fffbeb; border:1px solid #fcd34d; color:#92400e; padding:10px; border-radius:8px; margin-bottom:12px; line-height:1.6; }
-        .card { background:#fff; border-radius:12px; padding:16px; margin-bottom:12px; }
-        h3 { margin-bottom:10px; font-size:15px; display:flex; align-items:center; gap:8px; }
-        .tag { background:#eef2ff; color:#2563eb; font-size:11px; padding:2px 8px; border-radius:6px; }
-        label { font-size:12px; color:#555; display:block; margin-bottom:4px; }
-        textarea, input { width:100%; border:1px solid #d1d5db; border-radius:8px; padding:9px 10px; font-size:13px; }
-        textarea { min-height:70px; resize:vertical; }
-        .grid { display:grid; gap:12px; }
-        .g2 { grid-template-columns:1fr 1fr; }
-        .g4 { grid-template-columns:repeat(4,1fr); }
-        .btn { padding:12px; border:none; border-radius:8px; font-size:15px; margin:5px 0; cursor:pointer; }
-        .btn-p { background:#2563eb; color:#fff; }
-        .btn-d { background:#dc2626; color:#fff; }
-        .btn-n { background:#e5e7eb; color:#111; }
-        .row { display:flex; gap:8px; flex-wrap:wrap; }
-        .col { flex:1; }
-        .method-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
-        .m-btn { flex:1; min-width:60px; padding:8px 0; border:1px solid #d4d7de; border-radius:8px; text-align:center; font-size:13px; cursor:pointer; background:#fff; color:#444; }
-        .m-btn.active { background:#2563eb; border-color:#2563eb; color:#fff; }
-        .seg { display:flex; background:#f0f1f4; border-radius:8px; overflow:hidden; margin-bottom:8px; }
-        .seg button { flex:1; padding:8px; border:none; background:transparent; font-size:13px; cursor:pointer; color:#666; }
-        .seg button.active { background:#2563eb; color:#fff; }
-        .hidden { display:none; }
-        .chart { width:100%; height:220px; }
-        .charts { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-        .cbox { background:#fff; border-radius:12px; padding:12px; margin-bottom:10px; }
-        .cbox h4 { font-size:12px; color:#555; margin-bottom:6px; }
-        .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:10px 0; }
-        .stat { background:#f8fafc; border:1px solid #eceef2; border-radius:10px; padding:10px; text-align:center; }
-        .stat .num { font-size:18px; font-weight:700; color:#2563eb; }
-        .stat .lbl { font-size:11px; color:#777; margin-top:2px; }
-        .filter-tab { display:flex; gap:6px; margin-bottom:8px; }
-        .filter-tab button { padding:5px 12px; border:1px solid #d4d7de; border-radius:999px; background:#fff; font-size:12px; cursor:pointer; color:#555; }
-        .filter-tab button.active { background:#2563eb; color:#fff; border-color:#2563eb; }
-        .search-wrap { display:flex; gap:6px; margin-bottom:8px; }
-        .search-wrap input { flex:1; }
-        .tbl { width:100%; border-collapse:collapse; font-size:12px; }
-        .tbl th, .tbl td { border:1px solid #eceef2; padding:6px 7px; text-align:left; white-space:nowrap; }
-        .tbl th { background:#f8fafc; color:#555; }
-        .tbl-wrap { max-height:260px; overflow:auto; }
-        .expander { cursor:pointer; color:#2563eb; user-select:none; }
-        .log-item { border:1px solid #e2e8f0; border-radius:8px; margin-bottom:8px; overflow:hidden; }
-        .log-head { display:flex; flex-wrap:wrap; gap:12px; padding:7px 12px; font-size:12px; color:#334155; background:#f8fafc; font-family:monospace; }
-        .log-body { display:block; padding:10px 12px; font-size:12px; white-space:pre-wrap; word-break:break-all; background:#f6f8ff; border-top:1px dashed #cbd5e1; color:#1e293b; font-family:monospace; }
-        .log-url { color:#475569; }
-        @media (max-width:640px){ .g4,.g2,.charts,.stats { grid-template-columns:1fr 1fr; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>鸿联九五 — 幸运大转盘活动</title>
+<meta name="description" content="鸿联九五 — 参与幸运大转盘抽奖，赢取小米汽车、iPhone 等大奖！">
+<meta name="keywords" content="抽奖,活动,大转盘,端午,小米汽车,iPhone">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23B3122B'/%3E%3Ccircle cx='32' cy='32' r='20' fill='%23F5C842'/%3E%3Ctext x='32' y='43' font-size='26' font-weight='700' text-anchor='middle' fill='%23B3122B' font-family='serif'%3E转%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg0:#1A0A0A; --bg1:#2D0A0A; --bg2:#3D0F0F;
+  --gold:#F5C842; --gold-deep:#D4A017; --gold-dim:rgba(245,200,66,.35);
+  --red:#C41E3A; --red-bright:#FF2D55; --red-dark:#8B0000;
+  --cream:#FFF8E7; --cream-70:rgba(255,248,231,.7); --cream-50:rgba(255,248,231,.5);
+  --serif:'Noto Serif SC','Songti SC','STSong','SimSun',serif;
+  --sans:'Noto Sans SC','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:linear-gradient(180deg,var(--bg0),var(--bg1) 40%,var(--bg2));color:var(--cream);min-height:100vh;line-height:1.6}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+/* ===== 视图切换 ===== */
+.view{display:none}
+.view.active{display:block;animation:viewIn .35s ease both}
+.wheel-view.active{display:flex}
+@keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.container{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* ===== 按钮 ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font-weight:700;transition:transform .2s ease,box-shadow .2s ease,opacity .2s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-gold{background:linear-gradient(135deg,var(--gold-deep),var(--gold));color:#2D0A0A;box-shadow:0 2px 16px rgba(212,160,23,.45)}
+.btn-gold:hover{transform:scale(1.04)}
+.btn-red{background:linear-gradient(135deg,#C41E3A,#FF2D55);color:var(--cream);box-shadow:0 4px 24px rgba(196,30,58,.5),0 0 50px rgba(245,200,66,.18)}
+.btn-red:hover{transform:scale(1.04)}
+.btn-ghost{background:rgba(255,248,231,.08);border:1px solid rgba(245,200,66,.35);color:var(--cream)}
+.btn-ghost:hover{background:rgba(255,248,231,.14)}
+.btn-lg{padding:15px 44px;font-size:18px}
+.btn-md{padding:10px 22px;font-size:15px}
+.btn[disabled],.btn.disabled{opacity:.55;cursor:not-allowed;transform:none!important;box-shadow:none}
+
+/* ===== 顶部导航 ===== */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;max-width:1120px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-weight:900;font-size:20px;color:var(--gold);text-shadow:0 0 12px rgba(245,200,66,.45)}
+.brand-logo{width:30px;height:30px;flex:0 0 auto}
+.brand-arrow{font-size:15px;font-family:var(--sans)}
+
+/* ===== Hero ===== */
+.hero{position:relative;overflow:hidden;text-align:center;padding:70px 20px 78px;
+  background:linear-gradient(180deg,rgba(26,10,10,.30),rgba(26,10,10,.52) 45%,rgba(26,10,10,.96)),
+    url('https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/JQipbxiruoHSD8xghmqca3mcnId') center 26%/cover no-repeat}
+.hero::before{content:"";position:absolute;left:50%;top:20px;transform:translateX(-50%);width:min(90vw,460px);height:420px;border-radius:50%;background:radial-gradient(circle,rgba(245,200,66,.20),transparent 65%);pointer-events:none}
+.hero>*{position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:999px;font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--gold);border:1px solid rgba(245,200,66,.4);background:rgba(26,10,10,.5);backdrop-filter:blur(6px)}
+.hero-title{font-family:var(--serif);font-weight:900;font-size:clamp(42px,11vw,66px);color:var(--gold);text-shadow:0 0 26px rgba(245,200,66,.55),0 3px 6px rgba(0,0,0,.55);margin:24px 0 14px;letter-spacing:.06em}
+.hero-sub{font-size:clamp(16px,4.2vw,20px);color:var(--cream);max-width:560px;margin:0 auto 32px}
+.hero-sub br{display:none}
+.hero-hint{margin-top:20px;font-size:13px;color:var(--cream-50);letter-spacing:.05em}
+
+/* ===== 区块标题 ===== */
+.section{padding:58px 0 0}
+.section-head{text-align:center;margin-bottom:36px}
+.section-eyebrow{display:inline-flex;align-items:center;gap:12px;color:var(--gold-deep);font-weight:700;font-size:13px;letter-spacing:.3em}
+.section-eyebrow::before,.section-eyebrow::after{content:"";width:34px;height:1px}
+.section-eyebrow::before{background:linear-gradient(90deg,transparent,var(--gold-deep))}
+.section-eyebrow::after{background:linear-gradient(90deg,var(--gold-deep),transparent)}
+.section-title{font-family:var(--serif);font-weight:900;font-size:clamp(26px,6.5vw,34px);color:var(--gold);margin-top:12px;text-shadow:0 0 14px rgba(245,200,66,.3)}
+
+/* ===== 奖品一览 ===== */
+.prize-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:540px){.prize-grid{grid-template-columns:repeat(2,1fr);gap:16px}}
+@media(min-width:920px){.prize-grid{grid-template-columns:repeat(4,1fr);gap:20px}}
+.prize-card{text-align:center;padding:28px 16px 24px;border-radius:18px;background:linear-gradient(160deg,rgba(196,30,58,.28),rgba(139,0,0,.14));border:1px solid rgba(212,160,23,.32);box-shadow:0 6px 22px rgba(196,30,58,.18);transition:transform .25s ease}
+.prize-card:hover{transform:translateY(-4px) scale(1.02)}
+.prize-icon{width:54px;height:54px;margin:0 auto 14px;padding:12px;border-radius:16px;color:var(--gold);background:rgba(245,200,66,.12);border:1px solid rgba(245,200,66,.32)}
+.prize-level{font-size:12px;font-weight:800;letter-spacing:.24em;color:var(--gold-deep);margin-bottom:6px}
+.prize-name{font-family:var(--serif);font-weight:700;font-size:17px;color:var(--cream);margin-bottom:12px;line-height:1.35}
+.prize-quota{display:inline-block;font-size:12px;padding:4px 13px;border-radius:999px;color:var(--gold);background:rgba(212,160,23,.16);border:1px solid rgba(212,160,23,.35)}
+
+/* ===== 参与流程 ===== */
+.steps{display:grid}
+@media(min-width:760px){.steps{grid-template-columns:repeat(4,1fr)}}
+.step{display:flex;gap:16px;align-items:flex-start;padding:0 4px 26px}
+@media(min-width:760px){.step{flex-direction:column;align-items:center;text-align:center;padding:0 10px}}
+.step-rail{flex:0 0 auto;width:56px;display:flex;flex-direction:column;align-items:center}
+@media(min-width:760px){.step-rail{width:auto}}
+.step-dot{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);background:linear-gradient(135deg,#C41E3A,#8B0000);box-shadow:0 4px 14px rgba(196,30,58,.4);border:1px solid rgba(245,200,66,.4);z-index:1}
+.step-line{flex:1;width:2px;margin-top:6px;background:linear-gradient(180deg,rgba(245,200,66,.5),rgba(245,200,66,.1))}
+@media(min-width:760px){.step-line{display:none}}
+.step-body{flex:1;min-width:0}
+@media(min-width:760px){.step-body{margin-top:16px}}
+.step-no{font-size:12px;font-weight:800;letter-spacing:.22em;color:var(--gold-deep)}
+.step-title{font-weight:700;font-size:16px;color:var(--cream);margin:2px 0 4px}
+.step-desc{font-size:14px;color:var(--cream-70)}
+
+/* ===== 活动规则 ===== */
+.rules-card{max-width:640px;margin:0 auto;border-radius:20px;padding:30px 26px;background:linear-gradient(160deg,rgba(196,30,58,.16),rgba(139,0,0,.1));border:1px solid rgba(212,160,23,.22);backdrop-filter:blur(8px)}
+.rule{display:flex;gap:12px;padding:9px 0;font-size:14.5px;color:var(--cream)}
+.rule-num{flex:0 0 22px;height:22px;margin-top:1px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#2D0A0A;background:linear-gradient(135deg,var(--gold-deep),var(--gold))}
+
+/* ===== 主办方联系 ===== */
+.contact{padding:58px 0 64px;text-align:center}
+.contact-card{display:inline-flex;flex-direction:column;align-items:center;gap:6px;padding:32px 46px;border-radius:20px;background:linear-gradient(160deg,rgba(212,160,23,.16),rgba(245,200,66,.08));border:1px solid rgba(212,160,23,.34)}
+.contact-label{font-size:13px;color:var(--cream-70)}
+.contact-id{font-family:var(--serif);font-weight:900;font-size:30px;letter-spacing:.1em;color:var(--gold);text-shadow:0 0 14px rgba(245,200,66,.35)}
+.contact-sub{font-size:12px;color:var(--cream-50);margin-bottom:8px}
+.contact-copy{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-size:13px;font-weight:700;color:#2D0A0A;background:linear-gradient(135deg,var(--gold-deep),var(--gold))}
+.contact-copy:hover{filter:brightness(1.08)}
+
+/* ===== 页脚 ===== */
+.footer{text-align:center;padding:6px 20px 26px;font-size:12px;color:var(--cream-50)}
+
+/* ===== 转盘视图 ===== */
+.wheel-view{min-height:100vh;flex-direction:column;background:radial-gradient(900px 480px at 50% -80px,rgba(245,200,66,.16),transparent 60%),linear-gradient(180deg,var(--bg0),var(--bg1) 55%,var(--bg2))}
+.wheel-top{position:relative;text-align:center;padding:38px 20px 8px}
+.back-btn{position:absolute;left:16px;top:34px;display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:999px;font-size:13.5px;font-weight:700;color:#FFB3C1;background:rgba(255,248,231,.08);border:1px solid rgba(245,200,66,.35);transition:background .2s}
+.back-btn:hover{background:rgba(255,248,231,.16)}
+.wheel-title{font-family:var(--serif);font-weight:900;font-size:clamp(27px,7.5vw,36px);color:var(--gold);text-shadow:0 0 18px rgba(245,200,66,.45);letter-spacing:.05em}
+.wheel-sub{font-size:14px;color:var(--cream-70);margin-top:5px}
+.wheel-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 20px 44px}
+.wheel-wrap{position:relative;width:min(80vw,340px);aspect-ratio:1;margin-top:8px}
+.wheel-frame{position:absolute;inset:-16px;border-radius:50%;background:conic-gradient(from 30deg,#F5C842,#C41E3A,#8B0000,#F5C842);padding:6px;box-shadow:0 0 46px rgba(245,200,66,.42),0 0 90px rgba(196,30,58,.35)}
+.wheel-frame::before{content:"";position:absolute;inset:6px;border-radius:50%;background:radial-gradient(circle at 50% 32%,#431111,#200808 78%)}
+.rotor{position:absolute;inset:6px;border-radius:50%;overflow:hidden;transform:rotate(0deg);will-change:transform}
+.rotor svg{width:100%;height:100%;display:block}
+.pointer{position:absolute;top:-22px;left:50%;transform:translateX(-50%);z-index:6;width:40px;height:44px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.45))}
+.spin-btn{margin-top:34px}
+.wheel-note{margin-top:16px;font-size:12.5px;color:var(--cream-50);letter-spacing:.05em}
+.wheel-footer{padding:14px 20px 22px;text-align:center;font-size:12px;color:var(--cream-50)}
+
+/* ===== 结果弹窗 ===== */
+.modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(15,4,4,.74);backdrop-filter:blur(6px)}
+.modal[hidden]{display:none}
+.modal-card{width:min(92vw,370px);text-align:center;border-radius:24px;padding:38px 26px 28px;background:linear-gradient(170deg,#3D0F0F,#240909);border:1px solid rgba(245,200,66,.42);box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 70px rgba(245,200,66,.14);animation:pop .35s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+.modal-icon{width:78px;height:78px;margin:0 auto 18px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);background:radial-gradient(circle at 35% 30%,rgba(245,200,66,.28),rgba(196,30,58,.28));border:1px solid rgba(245,200,66,.45)}
+.modal-title{font-family:var(--serif);font-weight:900;font-size:25px;color:var(--gold)}
+.modal-prize{margin-top:9px;font-size:19px;font-weight:700;color:var(--cream)}
+.modal-desc{margin-top:10px;font-size:14px;color:var(--cream-70);line-height:1.7}
+.modal-contact{margin:18px auto 0;padding:13px 15px;border-radius:12px;background:rgba(212,160,23,.12);border:1px dashed rgba(245,200,66,.45);font-size:13px;color:var(--cream-70);line-height:1.7;text-align:left}
+.modal-contact b{color:var(--gold)}
+.modal .btn{margin-top:24px;width:100%}
+
+/* ===== Toast ===== */
+.toast{position:fixed;left:50%;top:22px;transform:translateX(-50%);z-index:60;padding:10px 20px;border-radius:999px;background:rgba(43,14,14,.94);border:1px solid rgba(245,200,66,.5);color:var(--gold);font-size:14px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.45);white-space:nowrap}
+.toast[hidden]{display:none}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition-duration:.01ms!important}
+}
+</style>
 </head>
 <body>
-<header>
-    <div><h1>Stars - 并发测试工具 · 综合版</h1><div class="sub">Load &amp; Concurrency Test Console</div></div>
-    <span class="pill" id="statusPill">就绪</span>
-</header>
 
-<div class="tip">
-⚠️ 浏览器 CORS 跨域限制，网页内直接请求可能报错；真实压测请复制生成的 Shell 脚本到 Termux/终端执行。<br>
-</div>
+<!-- ===== 视图：活动首页 ===== -->
+<div class="view" data-route="/" id="view-home">
+  <nav class="nav">
+    <a class="brand" href="#/" aria-label="鸿联九五 首页">
+      <svg class="brand-logo" viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="14.5" fill="none" stroke="#F5C842" stroke-width="2"/>
+        <circle cx="16" cy="16" r="5" fill="#F5C842"/>
+        <path d="M16 1.5v9M16 21.5v9M1.5 16h9M21.5 16h9M5.7 5.7l6.4 6.4M19.9 19.9l6.4 6.4M26.3 5.7l-6.4 6.4M12.1 19.9l-6.4 6.4" stroke="#F5C842" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span>鸿联九五</span>
+    </a>
+    <a class="btn btn-gold btn-md" href="#/wheel">立即抽奖 <span class="brand-arrow">→</span></a>
+  </nav>
 
-<div class="card">
-    <h3><span class="tag">Stars</span> 请求配置</h3>
-    <div class="grid" style="margin-bottom:10px;">
-        <label>抓包一键识别：粘贴原始 HTTP 请求，自动填入下方方法/URL/Headers/Body</label>
-        <textarea id="rawHttp" placeholder="粘贴完整抓包原始请求，例如：
-POST /api/demo HTTP/1.1
-Host: api.test.com
-Content-Type: application/json
-Authorization: Bearer xxx
+  <header class="hero">
+    <span class="hero-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 4.6 5 .4-3.8 3.3 1.1 4.9L12 13.6 7.8 16.2l1.1-4.9L5.1 8l5-.4z"/></svg>
+      端午限定 · 幸运大转盘
+    </span>
+    <h1 class="hero-title">鸿联九五</h1>
+    <p class="hero-sub">幸运大转盘，转出你的精彩人生！<br>小米汽车、iPhone 等超值大奖等你来拿！</p>
+    <a class="btn btn-red btn-lg" href="#/wheel">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v5.1M12 15.5v5.1M3.4 12h5.1M15.5 12h5.1M6.4 6.4l3.6 3.6M14 14l3.6 3.6M17.6 6.4L14 10M10 14l-3.6 3.6"/></svg>
+      立即参与抽奖
+    </a>
+    <p class="hero-hint">每人限一次抽奖机会 · 结果随机 · 中奖实物寄送</p>
+  </header>
 
-{\"data\":\"test\"}"></textarea>
-        <button class="btn btn-p" style="margin:4px 0;" onclick="identifyReq()">🔍 一键识别并填入</button>
-    </div>
-    <div class="method-row" id="methodRow">
-        <div class="m-btn active" data-m="GET">GET</div><div class="m-btn" data-m="POST">POST</div>
-        <div class="m-btn" data-m="PUT">PUT</div><div class="m-btn" data-m="DELETE">DELETE</div>
-        <div class="m-btn" data-m="PATCH">PATCH</div><div class="m-btn" data-m="HEAD">HEAD</div>
-    </div>
-    <div class="grid" style="margin-bottom:12px;">
-        <div><label>目标 URL</label><input id="url" value="" placeholder="https://api.example.com/v1/users"></div>
-    </div>
-    <div class="grid g2" style="margin-bottom:12px;">
-        <div>
-            <label>请求头 Headers（每行 名称:值）</label>
-            <textarea id="headers" placeholder="Content-Type: application/json&#10;Authorization: Bearer xxx"></textarea>
+  <main class="container">
+    <section class="section" aria-labelledby="prize-title">
+      <div class="section-head">
+        <span class="section-eyebrow">PRIZE LIST</span>
+        <h2 class="section-title" id="prize-title">奖品一览</h2>
+      </div>
+      <div class="prize-grid">
+        <div class="prize-card">
+          <div class="prize-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13l1.7-4.3A2 2 0 0 1 7.6 7.5h8.8a2 2 0 0 1 1.9 1.2L20 13"/><path d="M3.5 13h17v3.2a1 1 0 0 1-1 1H18a1 1 0 0 1-1-1V16H7v.2a1 1 0 0 1-1 1H4.5a1 1 0 0 1-1-1V13z"/><circle cx="7" cy="16.6" r="1.1"/><circle cx="17" cy="16.6" r="1.1"/></svg>
+          </div>
+          <div class="prize-level">特等奖</div>
+          <div class="prize-name">小米汽车</div>
+          <span class="prize-quota">名额 1 人</span>
         </div>
-        <div>
-            <label>请求体 Body</label>
-            <textarea id="body" placeholder='{"name":"test","count":1}'></textarea>
-            <div class="seg" style="margin-top:8px;">
-                <button data-body="none">无</button><button data-body="json" class="active">JSON</button>
-                <button data-body="text">纯文本</button><button data-body="form">表单</button>
+        <div class="prize-card">
+          <div class="prize-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.6"/><path d="M11 18.6h2"/><circle cx="9.4" cy="6" r=".8"/><circle cx="14.6" cy="6" r=".8"/></svg>
+          </div>
+          <div class="prize-level">一等奖</div>
+          <div class="prize-name">iPhone Duo</div>
+          <span class="prize-quota">名额 2 人</span>
+        </div>
+        <div class="prize-card">
+          <div class="prize-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.6"/><path d="M11 18.6h2"/></svg>
+          </div>
+          <div class="prize-level">二等奖</div>
+          <div class="prize-name">iPhone 18 Pro Max</div>
+          <span class="prize-quota">名额 3 人</span>
+        </div>
+        <div class="prize-card">
+          <div class="prize-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.6"/><path d="M11 18.6h2"/></svg>
+          </div>
+          <div class="prize-level">三等奖</div>
+          <div class="prize-name">iPhone 18 Pro</div>
+          <span class="prize-quota">名额 5 人</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="steps-title">
+      <div class="section-head">
+        <span class="section-eyebrow">HOW TO JOIN</span>
+        <h2 class="section-title" id="steps-title">参与流程</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-rail">
+            <div class="step-dot">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9V7.2A1.7 1.7 0 0 1 5.2 5.5h13.6a1.7 1.7 0 0 1 1.7 1.7V9"/><path d="M3.5 15v1.8a1.7 1.7 0 0 0 1.7 1.7h13.6a1.7 1.7 0 0 0 1.7-1.7V15"/><path d="M15 5.5v13M18.5 9.5v.01M18.5 14.5v.01"/></svg>
             </div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <div class="step-no">STEP 01</div>
+            <div class="step-title">进入活动</div>
+            <div class="step-desc">点击「立即抽奖」进入转盘页</div>
+          </div>
         </div>
-    </div>
-    <div class="grid g4">
-        <div><label>超时 (ms)</label><input type="number" id="timeout" value="10000" min="1"></div>
-    </div>
-</div>
-
-<div class="card">
-    <h3><span class="tag">Stars</span> 压测配置</h3>
-    <div class="grid g4" style="margin-bottom:12px;">
-        <div><label>并发线程数（记忆）</label><input type="number" id="threads" value="20" min="1"></div>
-        <div><label>每线程迭代（记忆）</label><input type="number" id="iterations" value="10" min="1"></div>
-        <div><label>Ramp-up 爬坡 (秒)</label><input type="number" id="rampup" value="0" min="0"></div>
-        <div><label>Think 间隔 (ms)</label><input type="number" id="think" value="0" min="0"></div>
-    </div>
-    <div class="grid g4" style="margin-bottom:12px;">
-        <div><label>执行次数（总请求上限，0=不限）</label><input type="number" id="execTimes" value="0" min="0"></div>
-        <div><label>请求间隔 (ms)</label><input type="number" id="reqInterval" value="0" min="0"></div>
-    </div>
-    <div class="grid g2" style="margin-bottom:10px;">
-        <div class="seg">
-            <button data-mode="iters" class="active">按迭代数</button>
-            <button data-mode="duration">按持续时间</button>
-        </div>
-    </div>
-    <div class="grid g2 hidden" id="durationBox" style="margin-bottom:10px;">
-        <div><label>持续时间 (秒)</label><input type="number" id="duration" value="30" min="1"></div>
-    </div>
-    <div class="tip" style="margin:0;">真实请求通过浏览器 <b>fetch</b> 发出，目标接口需允许跨域（CORS），跨域被拒绝会记为失败。</div>
-</div>
-
-<div class="card">
-    <h3><span class="tag">Stars</span> 定时执行任务</h3>
-    <div class="seg" style="margin-bottom:8px;">
-        <button data-sched="interval" class="active">按间隔（每隔N秒）</button>
-        <button data-sched="clock">按时刻（时分秒到点执行）</button>
-    </div>
-    <div class="grid g4" style="margin-bottom:10px;">
-        <div id="intervalBox">
-            <label>每隔 N 秒执行一轮</label>
-            <input type="number" id="intervalSec" value="10" min="1">
-        </div>
-        <div id="clockBox" class="hidden">
-            <label>到点执行 · 时:分:秒</label>
-            <div style="display:flex;gap:6px;">
-                <input type="number" id="clockHour" min="0" max="23" value="0">
-                <input type="number" id="clockMin" min="0" max="59" value="0">
-                <input type="number" id="clockSec" min="0" max="59" value="0">
+        <div class="step">
+          <div class="step-rail">
+            <div class="step-dot">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v5.1M12 15.5v5.1M3.4 12h5.1M15.5 12h5.1M6.4 6.4l3.6 3.6M14 14l3.6 3.6M17.6 6.4L14 10M10 14l-3.6 3.6"/></svg>
             </div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <div class="step-no">STEP 02</div>
+            <div class="step-title">转动转盘</div>
+            <div class="step-desc">点击「开始抽奖」转动幸运转盘</div>
+          </div>
         </div>
-        <div>
-            <label>执行轮次（0=一直执行）</label>
-            <input type="number" id="schedCount" value="0" min="0">
+        <div class="step">
+          <div class="step-rail">
+            <div class="step-dot">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="8" width="17" height="4.6" rx="1.2"/><path d="M12 8v12.5M5 12.6V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7.4"/><path d="M12 8c-2.1 0-4.6-1.6-3.6-4.1.9-2.3 4.6-.4 3.6 4.1zM12 8c2.1 0 4.6-1.6 3.6-4.1-.9-2.3-4.6-.4-3.6 4.1z"/></svg>
+            </div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <div class="step-no">STEP 03</div>
+            <div class="step-title">揭晓结果</div>
+            <div class="step-desc">等待转盘停止，查看中奖结果</div>
+          </div>
         </div>
-        <div class="col" style="display:flex;align-items:flex-end;gap:6px;">
-            <button class="btn btn-p" id="btnSched" style="flex:1;margin:0;" onclick="toggleSched()">开启定时</button>
-            <button class="btn btn-d" id="btnSchedStop" style="flex:1;margin:0;" onclick="stopSched()">停止定时</button>
+        <div class="step">
+          <div class="step-rail">
+            <div class="step-dot">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4a1.6 1.6 0 0 1 1.5-1h3A1.6 1.6 0 0 1 15 4v.8H9V4z"/><path d="M9 10.5h6M9 14h6M9 17.5h3.5"/></svg>
+            </div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <div class="step-no">STEP 04</div>
+            <div class="step-title">填写信息</div>
+            <div class="step-desc">中奖后填写收货信息即可</div>
+          </div>
         </div>
-    </div>
-    <div id="schedStatus" class="tip" style="margin:0;color:#3730a3;background:#eef2ff;border-color:#c7d2fe;">
-        定时未开启。按间隔模式：每隔N秒自动执行一轮；按时刻模式：到达设定的时:分:秒自动执行。
-    </div>
-    <div class="tip" style="margin:0;">
-        开启后工具会按设定方式自动执行压测；每轮执行完自动记录并汇总，下方表格可视化每一轮的 QPS、成功数、失败数与平均响应时间。
-    </div>
-    <div class="tbl-wrap" style="margin-top:10px;">
-        <table class="tbl">
-            <thead><tr><th>轮次</th><th>总请求</th><th>成功</th><th>失败</th><th>QPS</th><th>平均响应</th><th>完成时间</th></tr></thead>
-            <tbody id="roundBody"></tbody>
-        </table>
-    </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="rules-title">
+      <div class="section-head">
+        <span class="section-eyebrow">RULES</span>
+        <h2 class="section-title" id="rules-title">活动规则</h2>
+      </div>
+      <div class="rules-card">
+        <div class="rule"><span class="rule-num">1</span><span>每位参与者仅有一次抽奖机会，请珍惜使用。</span></div>
+        <div class="rule"><span class="rule-num">2</span><span>抽奖结果以转盘指针停止位置为准，结果随机生成。</span></div>
+        <div class="rule"><span class="rule-num">3</span><span>中奖者需在结果页填写真实姓名、手机号和收货地址。</span></div>
+        <div class="rule"><span class="rule-num">4</span><span>奖品将在活动结束后 15 个工作日内寄出。</span></div>
+        <div class="rule"><span class="rule-num">5</span><span>本活动最终解释权归主办方所有。</span></div>
+      </div>
+    </section>
+
+    <section class="contact" aria-labelledby="contact-title">
+      <h2 class="section-title" id="contact-title" style="margin-bottom:26px">咨询方式</h2>
+      <div class="contact-card">
+        <span class="contact-label">主办方微信号</span>
+        <span class="contact-id" id="wechat-id">CAI-YUXIN-</span>
+        <span class="contact-sub">如有疑问请添加微信咨询</span>
+        <button class="contact-copy" id="copy-btn" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          复制微信号
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">© 2026 鸿联九五 · 幸运抽奖活动</footer>
 </div>
 
-<div class="card">
-    <div class="row">
-        <div class="col"><button class="btn btn-p" style="margin:0;" onclick="startPress()">▶ 开始压测</button></div>
-        <div class="col"><button class="btn btn-d" style="margin:0;" onclick="stopPress()">⏹ 停止</button></div>
+<!-- ===== 视图：幸运大转盘 ===== -->
+<div class="view wheel-view" data-route="/wheel" id="view-wheel">
+  <header class="wheel-top">
+    <button class="back-btn" id="back-btn" type="button" aria-label="返回首页">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      返回
+    </button>
+    <h1 class="wheel-title">幸运大转盘</h1>
+    <p class="wheel-sub">点击按钮，转出你的好运～</p>
+  </header>
+
+  <main class="wheel-stage">
+    <div class="wheel-wrap">
+      <div class="wheel-frame"></div>
+      <div class="pointer" aria-hidden="true">
+        <svg viewBox="0 0 40 46">
+          <path d="M20 2 38 42a3 3 0 0 1-2.7 4H4.7A3 3 0 0 1 2 42Z" fill="#F5C842" stroke="#8B0000" stroke-width="1.5"/>
+          <path d="M20 8 33.6 42H6.4Z" fill="#C41E3A"/>
+        </svg>
+      </div>
+      <div class="rotor" id="rotor">
+        <svg viewBox="0 0 100 100" role="img" aria-label="幸运大转盘">
+          <!-- 扇区 -->
+          <g>
+            <path d="M 50 50 L 50 0 A 50 50 0 0 1 85.355 14.645 Z" fill="#B3122B"/>
+            <g transform="rotate(22.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#FFF8E7" font-size="3.4" font-weight="bold">特等奖</text><text x="50" y="29" text-anchor="middle" fill="#FFF8E7" font-size="2.5">小米汽车</text></g>
+          </g>
+          <g>
+            <path d="M 50 50 L 85.355 14.645 A 50 50 0 0 1 100 50 Z" fill="#6E1A20"/>
+            <g transform="rotate(67.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#F5C842" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
+          </g>
+          <g>
+            <path d="M 50 50 L 100 50 A 50 50 0 0 1 85.355 85.355 Z" fill="#D4A017"/>
+            <g transform="rotate(112.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#3A2400" font-size="3.4" font-weight="bold">一等奖</text><text x="50" y="29" text-anchor="middle" fill="#3A2400" font-size="2.5">iPhone Duo</text></g>
+          </g>
+          <g>
+            <path d="M 50 50 L 85.355 85.355 A 50 50 0 0 1 50 100 Z" fill="#7A1E24"/>
+            <g transform="rotate(157.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#F5C842" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
+          </g>
+          <g>
+            <path d="M 50 50 L 50 100 A 50 50 0 0 1 14.645 85.355 Z" fill="#C41E3A"/>
+            <g transform="rotate(202.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#FFF8E7" font-size="3.4" font-weight="bold">二等奖</text><text x="50" y="29" text-anchor="middle" fill="#FFF8E7" font-size="2.5">18 Pro Max</text></g>
+          </g>
+          <g>
+            <path d="M 50 50 L 14.645 85.355 A 50 50 0 0 1 0 50 Z" fill="#6E1A20"/>
+            <g transform="rotate(247.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#F5C842" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
+          </g>
+          <g>
+            <path d="M 50 50 L 0 50 A 50 50 0 0 1 14.645 14.645 Z" fill="#E8B33D"/>
+            <g transform="rotate(292.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#3A2400" font-size="3.4" font-weight="bold">三等奖</text><text x="50" y="29" text-anchor="middle" fill="#3A2400" font-size="2.5">iPhone 18 Pro</text></g>
+          </g>
+          <g>
+            <path d="M 50 50 L 14.645 14.645 A 50 50 0 0 1 50 0 Z" fill="#7A1E24"/>
+            <g transform="rotate(337.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#F5C842" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
+          </g>
+          <!-- 边缘灯珠 -->
+          <g fill="#F5C842" opacity=".85">
+            <circle cx="102" cy="50" r="1.4"/><circle cx="98.04" cy="69.9" r="1.4" fill="#FF6B6B"/><circle cx="86.76" cy="86.76" r="1.4"/><circle cx="69.9" cy="98.04" r="1.4" fill="#FF6B6B"/>
+            <circle cx="50" cy="102" r="1.4"/><circle cx="30.1" cy="98.04" r="1.4" fill="#FF6B6B"/><circle cx="13.24" cy="86.76" r="1.4"/><circle cx="1.96" cy="69.9" r="1.4" fill="#FF6B6B"/>
+            <circle cx="-2" cy="50" r="1.4"/><circle cx="1.96" cy="30.1" r="1.4" fill="#FF6B6B"/><circle cx="13.24" cy="13.24" r="1.4"/><circle cx="30.1" cy="1.96" r="1.4" fill="#FF6B6B"/>
+            <circle cx="50" cy="-2" r="1.4"/><circle cx="69.9" cy="1.96" r="1.4" fill="#FF6B6B"/><circle cx="86.76" cy="13.24" r="1.4"/><circle cx="98.04" cy="30.1" r="1.4" fill="#FF6B6B"/>
+          </g>
+          <!-- 中心轴 -->
+          <circle cx="50" cy="50" r="9.5" fill="url(#hubGrad)"/>
+          <circle cx="50" cy="50" r="6" fill="#FFF8E7" opacity=".22"/>
+          <text x="50" y="55" text-anchor="middle" fill="#2D0A0A" font-size="6.4" font-weight="bold" font-family="serif">转</text>
+          <defs>
+            <radialGradient id="hubGrad" cx="35%" cy="30%" r="80%">
+              <stop offset="0%" stop-color="#FFD54A"/>
+              <stop offset="100%" stop-color="#C41E3A"/>
+            </radialGradient>
+          </defs>
+        </svg>
+      </div>
     </div>
-    <div style="display:flex;justify-content:space-between;margin:10px 0;">
-        <span id="timerTxt" style="font-size:13px;color:#555;">等待开始 00:00</span>
-        <span id="elapsedTxt" style="font-size:13px;color:#888;">已运行 0s</span>
-    </div>
-    <div class="stats">
-        <div class="stat"><div class="num" id="stTotal"># 0</div><div class="lbl">总请求数</div></div>
-        <div class="stat"><div class="num" id="stOk" style="color:#10b981;"># 0</div><div class="lbl">成功</div></div>
-        <div class="stat"><div class="num" id="stFail" style="color:#dc2626;"># 0</div><div class="lbl">失败</div></div>
-        <div class="stat"><div class="num" id="stQps"># 0</div><div class="lbl">QPS</div></div>
-        <div class="stat"><div class="num" id="stAvg" style="font-size:15px;">--</div><div class="lbl">平均响应</div></div>
-        <div class="stat"><div class="num" id="stP95" style="font-size:15px;">--</div><div class="lbl">P95</div></div>
-    </div>
+
+    <button class="btn btn-red btn-lg spin-btn" id="spin-btn" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v5.1M12 15.5v5.1M3.4 12h5.1M15.5 12h5.1M6.4 6.4l3.6 3.6M14 14l3.6 3.6M17.6 6.4L14 10M10 14l-3.6 3.6"/></svg>
+      开始抽奖
+    </button>
+    <p class="wheel-note" id="chance-note">每人仅一次抽奖机会，请珍惜使用</p>
+  </main>
+
+  <footer class="wheel-footer">鸿联九五 · 幸运大转盘活动</footer>
 </div>
 
-<div class="cbox"><h3><span class="tag">Stars</span> QPS / 吞吐 趋势</h3><div class="chart" id="chartQps"></div></div>
-<div class="charts">
-    <div class="cbox"><h4>Stars 平均响应时间趋势</h4><div class="chart" id="chartRt"></div></div>
-    <div class="cbox"><h4>Stars 响应时间分布</h4><div class="chart" id="chartHist"></div></div>
-    <div class="cbox"><h4>Stars 状态码分布</h4><div class="chart" id="chartStatus"></div></div>
-    <div class="cbox"><h4>Stars 响应时间百分位</h4><div class="chart" id="chartPercentile"></div></div>
+<!-- ===== 结果弹窗 ===== -->
+<div class="modal" id="result-modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-card">
+    <div class="modal-icon" id="modal-icon"></div>
+    <h2 class="modal-title" id="modal-title">恭喜中奖！</h2>
+    <p class="modal-prize" id="modal-prize"></p>
+    <p class="modal-desc" id="modal-desc"></p>
+    <p class="modal-contact" id="modal-contact" hidden>
+      中奖后请添加主办方微信 <b>CAI-YUXIN-</b>，登记收货信息（姓名 / 手机号 / 收货地址），奖品将在活动结束后 15 个工作日内寄出。
+    </p>
+    <button class="btn btn-gold btn-md" id="modal-close" type="button">知道了</button>
+  </div>
 </div>
 
-<div class="card">
-    <h3><span class="tag">Stars</span> 响应返回数据可视化</h3>
-    <div id="fieldWrap" style="margin-bottom:8px;">
-        <label>数值字段</label>
-        <select id="fieldSelect" style="margin-bottom:6px;"><option value="">暂无响应数据</option></select>
-    </div>
-    <div class="chart" id="chartField" style="height:200px;"></div>
-    <div class="tip" style="margin-top:6px;">自动识别成功响应中的 JSON 数值字段并绘制其随请求的变化趋势；在下方「请求日志」中点击任意一行可查看该请求返回的完整响应体。</div>
-</div>
-
-<div class="card">
-    <h3><span class="tag">Stars</span> 请求日志</h3>
-    <div class="filter-tab">
-        <button data-filter="all" class="active">全部</button>
-        <button data-filter="ok">成功</button>
-        <button data-filter="fail">失败</button>
-    </div>
-    <div class="search-wrap">
-        <input id="logSearch" placeholder="搜索 方法 / URL / 状态码 / 耗时 / 响应内容…" oninput="renderLog()">
-    </div>
-    <div class="tbl-wrap">
-        <table class="tbl">
-            <thead><tr><th>#</th><th>方法</th><th>URL</th><th>状态码</th><th>耗时</th><th>大小</th><th>时间</th><th>线程</th><th>响应</th></tr></thead>
-            <tbody id="logBody"></tbody>
-        </table>
-    </div>
-</div>
-
-<div class="card">
-    <h3><span class="tag">Stars</span> 详细日志（响应自动展开）</h3>
-    <div class="tbl-wrap" id="detailLogBox" style="max-height:420px;"></div>
-</div>
-
-<div class="card">
-    <h3><span class="tag">Stars</span> 说明</h3>
-    <div class="tip" style="margin:0;">
-        并发线程在浏览器内以异步协程调度实现，数值逼近真实压测但受单进程事件循环限制；「真实请求」依赖目标接口的 CORS 配置，跨域被拒绝会记为失败。
-    </div>
-</div>
+<!-- ===== Toast ===== -->
+<div class="toast" id="toast" hidden role="status"></div>
 
 <script>
-var running=false, stopped=false, method='GET', execMode='iters';
-var stats={total:0,ok:0,fail:0}, rtSamples=[], statusCount={}, logRows=[];
-var qpsSeries=[], rtSeries=[], startTs=0, lastTick=0, windowCount=0;
-var timerTick=null, logFilter='all', schedTimer=null, roundNo=0, schedOn=false, schedMode='interval', clockTimer=null;
-var charts={}, chartOK=false, fieldHist={};
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
 
-function $(id){return document.getElementById(id);}
-function pad(n){return n<10?'0'+n:''+n;}
-function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  /* ---- 视图路由 ---- */
+  function go(){
+    var hash = location.hash || '#/';
+    var views = document.querySelectorAll('.view');
+    for (var i = 0; i < views.length; i++){
+      views[i].classList.toggle('active', '#' + views[i].getAttribute('data-route') === hash);
+    }
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', go);
+  go();
 
-function initCharts(){
-    if(typeof echarts==='undefined'){ chartOK=false; return; }
-    try{
-        ['chartQps','chartRt','chartHist','chartStatus','chartPercentile','chartField'].forEach(function(id){ charts[id]=echarts.init($(id)); });
-        chartOK=true;
-        var empty={ tooltip:{trigger:'axis'}, grid:{left:45,right:15,top:30,bottom:28}, xAxis:{type:'category',data:['--']}, yAxis:{type:'value'}, series:[{type:'bar',data:[0]}] };
-        charts.chartHist.setOption(empty,true); charts.chartPercentile.setOption(empty,true);
-        charts.chartQps.setOption(empty,true); charts.chartRt.setOption(empty,true); charts.chartField.setOption(empty,true);
-        window.addEventListener('resize',function(){for(var k in charts) charts[k].resize();});
-    }catch(e){ chartOK=false; }
-}
-function baseOpt(){ return { tooltip:{trigger:'axis'}, grid:{left:45,right:15,top:30,bottom:28}, xAxis:{type:'category',data:[]}, yAxis:{type:'value'}, series:[] }; }
+  $('back-btn').addEventListener('click', function(){ location.hash = '#/'; });
 
-(function init(){
-    initCharts();
-    var rememberIds = ['url','headers','body','timeout','threads','iterations','rampup','think','execTimes','reqInterval','duration','intervalSec','clockHour','clockMin','clockSec','schedCount'];
-    rememberIds.forEach(function(id){
-        var el=document.getElementById(id); if(!el)return;
-        try{ var sv=localStorage.getItem('stars_'+id); if(sv!==null) el.value=sv; }catch(e){}
-        el.addEventListener('input',function(){ try{ localStorage.setItem('stars_'+id, el.value); }catch(e){} });
-    });
-    try{ var sm=localStorage.getItem('stars_method');
-        if(sm){ var mt=document.querySelector('.m-btn[data-m="'+sm+'"]');
-            if(mt){ document.querySelectorAll('.m-btn').forEach(function(x){x.classList.remove('active');}); mt.classList.add('active'); method=sm; } }
-    }catch(e){}
-    var mr=document.getElementById('methodRow');
-    mr.addEventListener('click',function(e){
-        var b=e.target.closest('.m-btn'); if(!b)return;
-        document.querySelectorAll('.m-btn').forEach(function(x){x.classList.remove('active');});
-        b.classList.add('active'); method=b.dataset.m;
-        try{ localStorage.setItem('stars_method', method); }catch(e){}
-    });
-    try{ var smd=localStorage.getItem('stars_execMode');
-        if(smd){ var mo=document.querySelector('[data-mode="'+smd+'"]');
-            if(mo){ document.querySelectorAll('[data-mode]').forEach(function(x){x.classList.remove('active');}); mo.classList.add('active'); execMode=smd; $('durationBox').classList.toggle('hidden',execMode!=='duration'); } }
-    }catch(e){}
-    document.querySelectorAll('[data-mode]').forEach(function(b){
-        b.addEventListener('click',function(){
-            document.querySelectorAll('[data-mode]').forEach(function(x){x.classList.remove('active');});
-            b.classList.add('active'); execMode=b.dataset.mode;
-            $('durationBox').classList.toggle('hidden',execMode!=='duration');
-            try{ localStorage.setItem('stars_execMode', execMode); }catch(e){}
-        });
-    });
-    document.querySelectorAll('[data-body]').forEach(function(b){
-        b.addEventListener('click',function(){
-            document.querySelectorAll('[data-body]').forEach(function(x){x.classList.remove('active');});
-            b.classList.add('active');
-        });
-    });
-    document.querySelectorAll('[data-sched]').forEach(function(b){
-        b.addEventListener('click',function(){
-            document.querySelectorAll('[data-sched]').forEach(function(x){x.classList.remove('active');});
-            b.classList.add('active'); schedMode=b.dataset.sched;
-            $('intervalBox').classList.toggle('hidden',schedMode!=='interval');
-            $('clockBox').classList.toggle('hidden',schedMode!=='clock');
-        });
-    });
-    document.querySelectorAll('[data-filter]').forEach(function(b){
-        b.addEventListener('click',function(){
-            document.querySelectorAll('[data-filter]').forEach(function(x){x.classList.remove('active');});
-            b.classList.add('active'); logFilter=b.dataset.filter; renderLog();
-        });
-    });
-    if($('fieldSelect')) $('fieldSelect').addEventListener('change',function(){ drawField(); });
+  /* ---- Toast ---- */
+  var toastTimer = null;
+  function toast(msg){
+    var t = $('toast');
+    t.textContent = msg;
+    t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.hidden = true; }, 2200);
+  }
+
+  /* ---- 复制微信号 ---- */
+  var copyBtn = $('copy-btn');
+  copyBtn.addEventListener('click', function(){
+    var id = $('wechat-id').textContent;
+    function done(){ toast('微信号已复制：' + id); }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(id).then(done, function(){
+        fallbackCopy(id); done();
+      });
+    } else { fallbackCopy(id); done(); }
+  });
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch(e){}
+    ta.remove();
+  }
+
+  /* ---- 转盘 ---- */
+  var SEGS = [
+    {t:'特等奖', n:'小米汽车'},
+    {t:'幸运奖', n:'谢谢参与'},
+    {t:'一等奖', n:'iPhone Duo'},
+    {t:'幸运奖', n:'谢谢参与'},
+    {t:'二等奖', n:'iPhone 18 Pro Max'},
+    {t:'幸运奖', n:'谢谢参与'},
+    {t:'三等奖', n:'iPhone 18 Pro'},
+    {t:'幸运奖', n:'谢谢参与'}
+  ];
+  var rotor = $('rotor');
+  var spinBtn = $('spin-btn');
+  var chanceNote = $('chance-note');
+  var spinning = false;
+  var used = false;
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var SPIN_MS = reducedMotion ? 300 : 4700;
+
+  spinBtn.addEventListener('click', function(){
+    if (spinning || used) return;
+    spinning = true;
+    spinBtn.disabled = true;
+    spinBtn.textContent = '转盘中…';
+
+    var idx = Math.floor(Math.random() * SEGS.length);
+    var deg = 360 * 5 + (360 - (idx * 45 + 22.5));
+    rotor.style.transition = 'transform ' + (SPIN_MS / 1000) + 's cubic-bezier(.12,.8,.25,1)';
+    rotor.style.transform = 'rotate(' + deg + 'deg)';
+
+    setTimeout(function(){
+      spinning = false;
+      used = true;
+      spinBtn.textContent = '今日机会已用';
+      spinBtn.classList.add('disabled');
+      chanceNote.textContent = '抽奖机会已使用，感谢参与';
+      showResult(SEGS[idx]);
+    }, SPIN_MS + 150);
+  });
+
+  /* ---- 结果弹窗 ---- */
+  var modal = $('result-modal');
+  var GIFT_ICON = '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="8" width="17" height="4.6" rx="1.2"/><path d="M12 8v12.5M5 12.6V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7.4"/><path d="M12 8c-2.1 0-4.6-1.6-3.6-4.1.9-2.3 4.6-.4 3.6 4.1zM12 8c2.1 0 4.6-1.6 3.6-4.1-.9-2.3-4.6-.4-3.6 4.1z"/></svg>';
+  var STAR_ICON = '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2 4.9 5.3.5-4 3.6 1.2 5.2L12 14.9l-4.5 2.8 1.2-5.2-4-3.6 5.3-.5z"/><path d="M12 3.5v4M12 16.5v4"/></svg>';
+
+  function showResult(seg){
+    var icon = $('modal-icon'), title = $('modal-title'), prize = $('modal-prize'),
+        desc = $('modal-desc'), contact = $('modal-contact');
+    if (seg.t === '幸运奖'){
+      icon.innerHTML = STAR_ICON;
+      title.textContent = '很遗憾，未中奖';
+      prize.textContent = '谢谢参与';
+      desc.textContent = '这次差一点点，感谢你的参与，祝你端午安康～';
+      contact.hidden = true;
+    } else {
+      icon.innerHTML = GIFT_ICON;
+      title.textContent = '恭喜中奖！';
+      prize.textContent = seg.t + ' · ' + seg.n;
+      desc.textContent = '你抽中了「' + seg.n + '」，快去登记收货信息吧！';
+      contact.hidden = false;
+    }
+    modal.hidden = false;
+  }
+
+  $('modal-close').addEventListener('click', function(){ modal.hidden = true; });
+  modal.addEventListener('click', function(e){ if (e.target === modal) modal.hidden = true; });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !modal.hidden) modal.hidden = true; });
 })();
-
-function parseHeaders(str){ var o={}; str.split('\n').forEach(function(l){l=l.trim();if(!l)return;var i=l.indexOf(':');if(i>0)o[l.slice(0,i).trim()]=l.slice(i+1).trim();}); return o; }
-
-function identifyReq(){
-    var raw=$('rawHttp').value;
-    if(!raw.trim()){ alert('请先粘贴抓包原始请求内容'); return; }
-    var lines=raw.split('\n'), h={}, methodVal='', pathVal='', bodyStr='', readBody=false;
-    for(var i=0;i<lines.length;i++){
-        var l=lines[i].replace(/\r$/,'');
-        if(!readBody){
-            if(l===''){ readBody=true; continue; }
-            if(i===0){ var sp=l.split(/\s+/); methodVal=sp[0]; pathVal=sp[1]; continue; }
-            var kv=l.split(':');
-            if(kv.length>=2) h[kv[0].trim()]=kv.slice(1).join(':').trim();
-        }else bodyStr += l+'\n';
-    }
-    if(methodVal){
-        var btn=document.querySelector('.m-btn[data-m="'+methodVal+'"]');
-        if(btn){ document.querySelectorAll('.m-btn').forEach(function(x){x.classList.remove('active');}); btn.classList.add('active'); method=methodVal; }
-    }
-    var headerText=''; for(var k in h) headerText += k+': '+h[k]+'\n';
-    $('headers').value = headerText.trim();
-    $('body').value = bodyStr.trim();
-    var host=h['Host'], urlVal=$('url').value;
-    if(pathVal && host) urlVal='https://'+host+pathVal;
-    else if(pathVal && /^https?:\/\//i.test(pathVal)) urlVal=pathVal;
-    $('url').value=urlVal.trim();
-    renderDetailLog();
-    alert('✅ 一键识别完成：已自动填入 方法 / URL / Headers / Body');
-}
-
-function fireRequest(thr){
-    return new Promise(function(resolve){
-        var url=$('url').value.trim(), timeout=Number($('timeout').value)||10000;
-        var t0=performance.now();
-        function done(status,size,respText){
-            var ms=performance.now()-t0;
-            rtSamples.push(ms); stats.total++;
-            if(status>=200&&status<400) stats.ok++; else stats.fail++;
-            statusCount[status]=(statusCount[status]||0)+1;
-            logRows.push({method:method,url:url,status:status,ms:ms,size:size||0,time:new Date().toLocaleTimeString(),thr:thr,ok:(status>=200&&status<400),resp:respText});
-            if(logRows.length>1000) logRows.shift();
-            collectFields(respText);
-            resolve();
-        }
-        var h=parseHeaders($('headers').value), bv=$('body').value;
-        var opts={method:method,headers:h,signal:AbortSignal.timeout(timeout)};
-        if(bv.trim()) opts.body=bv;
-        fetch(url,opts).then(function(res){
-            res.arrayBuffer().then(function(buf){
-                var txt=''; try{ txt=new TextDecoder().decode(buf); }catch(e){}
-                done(res.status,buf.byteLength,txt);
-            }).catch(function(){ done(res.status,0,''); });
-        }).catch(function(err){ done(0,0,'请求异常: '+err.message); });
-    });
-}
-
-function collectFields(respText){
-    if(!respText) return;
-    var obj; try{ obj=JSON.parse(respText); }catch(e){ return; }
-    if(!obj||typeof obj!=='object') return;
-    var keys=Object.keys(obj), sel=$('fieldSelect'), changed=false;
-    keys.forEach(function(k){
-        if(typeof obj[k]==='number' && fieldHist[k]===undefined){
-            fieldHist[k]=[]; changed=true;
-            var opt=document.createElement('option'); opt.value=k; opt.textContent=k; sel.appendChild(opt);
-        }
-    });
-    if(changed && sel.options.length>0 && sel.value==='') sel.value=sel.options[1]?sel.options[1].value:sel.options[0].value;
-    keys.forEach(function(k){ if(fieldHist[k]!==undefined && typeof obj[k]==='number') fieldHist[k].push(obj[k]); });
-    drawField();
-}
-function drawField(){
-    if(!chartOK) return;
-    var val=$('fieldSelect').value;
-    if(!val || !fieldHist[val]) return;
-    var opt=baseOpt();
-    opt.xAxis.data=fieldHist[val].map(function(_,i){return '#'+(i+1);});
-    opt.series=[{type:'line',smooth:true,data:fieldHist[val],areaStyle:{opacity:.15},lineStyle:{color:'#2563eb'}}];
-    charts.chartField.setOption(opt,true);
-}
-
-function updateStats(){
-    $('stTotal').textContent='# '+stats.total;
-    $('stOk').textContent='# '+stats.ok;
-    $('stFail').textContent='# '+stats.fail;
-    var el=(performance.now()-startTs)/1000, qps=el>0?stats.total/el:0;
-    $('stQps').textContent='# '+qps.toFixed(1);
-    var avg=stats.total?rtSamples.reduce(function(a,b){return a+b;},0)/stats.total:0;
-    $('stAvg').textContent=avg?avg.toFixed(1)+'ms':'--';
-    var sorted=rtSamples.slice().sort(function(a,b){return a-b;});
-    var p95=sorted.length?sorted[Math.floor(sorted.length*0.95)]:0;
-    $('stP95').textContent=p95?p95.toFixed(1)+'ms':'--';
-}
-function pushTrend(){
-    var t=(performance.now()-startTs)/1000;
-    qpsSeries.push({t:t,qps:(windowCount/((performance.now()-lastTick)/1000)).toFixed(1)});
-    rtSeries.push({t:t,avg:stats.total?(rtSamples.reduce(function(a,b){return a+b;},0)/stats.total).toFixed(1):0});
-    windowCount=0; lastTick=performance.now();
-    if(!chartOK) return;
-    var q=baseOpt(); q.xAxis.data=qpsSeries.map(function(x){return x.t.toFixed(0)+'s';});
-    q.series=[{type:'line',smooth:true,data:qpsSeries.map(function(x){return x.qps;}),areaStyle:{opacity:.15},lineStyle:{color:'#2563eb'}}];
-    charts.chartQps.setOption(q,true);
-    var r=baseOpt(); r.xAxis.data=rtSeries.map(function(x){return x.t.toFixed(0)+'s';});
-    r.series=[{type:'line',smooth:true,data:rtSeries.map(function(x){return x.avg;}),lineStyle:{color:'#f59e0b'}}];
-    charts.chartRt.setOption(r,true);
-}
-function drawDist(){
-    if(!chartOK) return;
-    var bk=[0,50,100,200,500,1000,2000,5000], cn=new Array(bk.length).fill(0);
-    rtSamples.forEach(function(ms){ for(var i=0;i<bk.length;i++){ if(ms<=bk[i]||i===bk.length-1){cn[i]++;break;} } });
-    var h=baseOpt(); h.xAxis.data=['0-50','50-100','100-200','200-500','500-1k','1k-2k','2k-5k','5k+'];
-    h.series=[{type:'bar',data:cn,itemStyle:{color:'#8b5cf6'}}];
-    charts.chartHist.setOption(h,true);
-    var keys=Object.keys(statusCount), s=baseOpt();
-    s.series=[{type:'pie',radius:'60%',center:['50%','60%'],data:keys.map(function(k){return {name:k==='0'?'ERR':k,value:statusCount[k]};}),label:{formatter:'{b}: {c}'}}];
-    charts.chartStatus.setOption(s,true);
-    var sorted=rtSamples.slice().sort(function(a,b){return a-b;});
-    var p=[0.5,0.75,0.9,0.95,0.99], v=p.map(function(x){return sorted.length?sorted[Math.floor(sorted.length*x)]:0;});
-    var pc=baseOpt(); pc.xAxis.data=['P50','P75','P90','P95','P99'];
-    pc.series=[{type:'bar',data:v,itemStyle:{color:'#10b981'}}];
-    charts.chartPercentile.setOption(pc,true);
-}
-
-function renderLog(){
-    var kw=$('logSearch').value.trim().toLowerCase(), tb=$('logBody');
-    tb.innerHTML='';
-    var rows=logRows.filter(function(r){
-        if(logFilter==='ok'&&!r.ok)return false;
-        if(logFilter==='fail'&&r.ok)return false;
-        if(kw){ var hay=(r.method+' '+r.url+' '+r.status+' '+r.ms.toFixed(1)+' '+r.size+' '+(r.resp||'')).toLowerCase(); if(!hay.includes(kw))return false; }
-        return true;
-    });
-    rows.slice(-150).forEach(function(r,i){
-        var idx=logRows.indexOf(r), tr=document.createElement('tr');
-        tr.innerHTML='<td>'+(i+1)+'</td><td>'+r.method+'</td><td>'+r.url+'</td><td style="color:'+(r.ok?'#10b981':'#dc2626')+'">'+(r.status||'ERR')+'</td><td>'+r.ms.toFixed(1)+'ms</td><td>'+r.size+'B</td><td>'+r.time+'</td><td>t'+r.thr+'</td><td><span class="expander" onclick="toggleResp(event,'+idx+')">▶ 展开</span></td>';
-        var detail=document.createElement('tr');
-        detail.innerHTML='<td colspan="9"><div class="log-detail" id="detail_'+idx+'"></div></td>';
-        tb.appendChild(tr); tb.appendChild(detail);
-        tr.classList.add('has-detail'); tr.dataset.idx=idx;
-    });
-    renderDetailLog();
-}
-function fmtResp(body){
-    if(body===undefined||body===null||body==='') return '(空)';
-    var out=body.length>8000?body.substring(0,8000)+'\n…(内容过长已截断)':body;
-    try{ out=JSON.stringify(JSON.parse(out),null,2); }catch(e){}
-    return out;
-}
-function toggleResp(ev, idx){
-    if(ev) ev.stopPropagation();
-    var d=document.getElementById('detail_'+idx); if(!d) return;
-    var r=logRows[idx]; if(!r) return;
-    if(d.innerHTML==='') d.textContent='【'+r.method+' '+r.url+'】 状态:'+(r.status||'ERR')+' · 耗时:'+r.ms.toFixed(1)+'ms · 大小:'+r.size+'B\n\n响应内容：\n'+fmtResp(r.resp);
-    var tr=d.closest('tr').previousElementSibling, open=tr.classList.toggle('open');
-    var exp=tr.querySelector('.expander'); if(exp) exp.textContent=open?'▼ 收起':'▶ 展开';
-    if(ev) ev.preventDefault();
-}
-function showResp(ev, idx){ toggleResp(ev, idx); }
-function renderDetailLog(){
-    var box=$('detailLogBox'); if(!box) return;
-    var kw=$('logSearch').value.trim().toLowerCase();
-    var rows=logRows.filter(function(r){
-        if(kw){ var hay=(r.method+' '+r.url+' '+r.status+' '+r.ms.toFixed(1)+' '+r.size+' '+(r.resp||'')).toLowerCase(); if(!hay.includes(kw))return false; }
-        return true;
-    });
-    var html='';
-    if(rows.length===0){ box.innerHTML='<div style="color:#94a3b8;padding:10px;">暂无日志，请先开始压测。</div>'; return; }
-    rows.slice().reverse().slice(0,80).forEach(function(r){
-        var st=r.status||'ERR';
-        var body=r.resp===undefined||r.resp===''?'(空)':(r.resp.length>12000?r.resp.substring(0,12000)+'\n…(已截断)':r.resp);
-        try{ body=JSON.stringify(JSON.parse(body),null,2); }catch(e){}
-        html+='<div class="log-item"><div class="log-head"><span>'+r.method+'</span><span style="color:'+(r.ok?'#16a34a':'#dc2626')+'">'+st+'</span><span>'+r.ms.toFixed(1)+'ms</span><span>'+r.size+'B</span><span>'+r.time+'</span><span>t'+r.thr+'</span></div><div class="log-body"><span class="log-url">'+esc(r.url)+'</span>\n\n'+esc(body)+'</div></div>';
-    });
-    box.innerHTML=html;
-}
-function runWorker(thr){
-    var loop=function(){
-        if(stopped)return;
-        if(execMode==='iters' && thr>= (Number($('iterations').value)||1))return;
-        var et=Number($('execTimes').value)||0;
-        if(et>0 && stats.total>=et){ stopPress(); return; }
-        fireRequest(thr).then(function(){
-            windowCount++;
-            var th=Number($('think').value)||0, ri=Number($('reqInterval').value)||0;
-            setTimeout(loop, th+ri);
-        });
-    };
-    loop();
-}
-function startPress(){
-    if(running)return;
-    running=true; stopped=false;
-    $('statusPill').textContent='运行中'; $('statusPill').style.background='#2563eb';
-    stats={total:0,ok:0,fail:0}; rtSamples=[]; statusCount={}; logRows=[];
-    qpsSeries=[]; rtSeries=[]; fieldHist={};
-    $('fieldSelect').innerHTML='<option value="">暂无响应数据</option>';
-    startTs=performance.now(); lastTick=startTs; windowCount=0;
-    $('logBody').innerHTML='';
-    var threads=Number($('threads').value)||1, ramp=Number($('rampup').value)||0;
-    for(var i=0;i<threads;i++){
-        var delay=ramp>0?(i/threads)*ramp*1000:0;
-        (function(idx){ setTimeout(function(){ if(!stopped) runWorker(idx); }, delay); })(i);
-    }
-    $('timerTxt').textContent='运行中';
-    var t0=Date.now();
-    timerTick=setInterval(function(){
-        var el=Math.floor((Date.now()-t0)/1000);
-        $('elapsedTxt').textContent='已运行 '+el+'s';
-        $('timerTxt').textContent='运行中 '+pad(Math.floor(el/60))+':'+pad(el%60);
-        updateStats(); pushTrend(); drawDist(); renderLog();
-        if(stopped){ clearInterval(timerTick); finalize(); }
-    },1000);
-}
-function stopPress(){
-    if(!running)return;
-    stopped=true; running=false;
-    $('statusPill').textContent='已停止'; $('statusPill').style.background='#dc2626';
-    $('timerTxt').textContent='已结束';
-    if(stats.total>0){
-        roundNo++;
-        var el=(performance.now()-startTs)/1000, tb=$('roundBody'), tr=document.createElement('tr');
-        tr.innerHTML='<td>第'+roundNo+'轮</td><td>'+stats.total+'</td><td>'+stats.ok+'</td><td>'+stats.fail+'</td><td>'+(el>0?(stats.total/el).toFixed(1):'0')+'</td><td>'+(stats.total?(rtSamples.reduce(function(a,b){return a+b;},0)/stats.total).toFixed(1)+'ms':'--')+'</td><td>'+new Date().toLocaleTimeString()+'</td>';
-        tb.prepend(tr);
-    }
-    if(schedOn){
-        var sc=Number($('schedCount').value)||0;
-        if(sc>0 && roundNo>=sc){ schedStatus('✅ 定时任务已完成 '+roundNo+' 轮，自动停止。'); setTimeout(function(){ stopSched(); },400); }
-    }
-}
-function finalize(){ updateStats(); pushTrend(); drawDist(); renderLog(); }
-function schedStatus(msg){ var el=$('schedStatus'); if(el) el.innerHTML=msg; }
-function schedTick(){ startPress(); }
-function toggleSched(){
-    if(schedOn){ stopSched(); return; }
-    var sec=Number($('intervalSec').value)||10, sc=Number($('schedCount').value)||0;
-    roundNo=0;
-    schedOn=true; $('btnSched').textContent='停止定时';
-    $('statusPill').textContent='定时中'; $('statusPill').style.background='#9333ea';
-    if(schedMode==='interval'){
-        schedTick();
-        schedStatus('⏱ 按间隔模式运行中：每隔 '+sec+' 秒执行一轮'+(sc>0?'，共 '+sc+' 轮':'，一直执行')+'。');
-        schedTimer=setInterval(function(){ if(schedOn) schedTick(); }, sec*1000);
-    }else{
-        var h=Number($('clockHour').value)||0, m=Number($('clockMin').value)||0, s=Number($('clockSec').value)||0;
-        schedStatus('🕒 按时刻模式已开启：到达 '+pad(h)+':'+pad(m)+':'+pad(s)+' 自动执行'+(sc>0?'，共 '+sc+' 轮':'，每天该时刻执行')+'。');
-        clockTimer=setInterval(function(){
-            if(!schedOn){ clearInterval(clockTimer); return; }
-            var now=new Date();
-            if(now.getHours()===h && now.getMinutes()===m && now.getSeconds()===s) schedTick();
-        },1000);
-    }
-}
-function stopSched(){
-    schedOn=false; clearInterval(schedTimer); clearInterval(clockTimer);
-    schedTimer=null; clockTimer=null;
-    $('btnSched').textContent='开启定时';
-    if(running) stopPress();
-    $('statusPill').textContent='就绪'; $('statusPill').style.background='#10b981';
-    schedStatus('定时已关闭。');
-}
 </script>
 </body>
 </html>
