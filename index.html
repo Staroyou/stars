@@ -1,691 +1,1146 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>鸿联九五 — 双十一购物狂欢节</title>
-<meta name="description" content="鸿联九五 — 双十一购物狂欢节幸运大转盘抽奖，赢取小米汽车、iPhone 等大奖！">
-<meta name="keywords" content="抽奖,活动,大转盘,双十一,购物狂欢节,小米汽车,iPhone">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23B3122B'/%3E%3Ccircle cx='32' cy='32' r='20' fill='%23F5C842'/%3E%3Ctext x='32' y='43' font-size='26' font-weight='700' text-anchor='middle' fill='%23B3122B' font-family='serif'%3E转%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&family=ZCOOL+KuaiLe&display=swap">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg0:#FFEFF6; --bg1:#FFDEEB; --bg2:#FFCBE0;
-  --gold:#FF6FB5; --gold-deep:#E6458B; --gold-dim:rgba(255,111,181,.30);
-  --red:#FF5C9E; --red-bright:#FF7BBE; --red-dark:#D6336C;
-  --cream:#A1135B; --cream-70:rgba(161,19,91,.75); --cream-50:rgba(161,19,91,.58);
-  --serif:'Noto Serif SC','Songti SC','STSong','SimSun',serif;
-  --sans:'Noto Sans SC','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
-  --cute:'ZCOOL KuaiLe','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
-}
-html{-webkit-text-size-adjust:100%}
-body{font-family:var(--sans);background:linear-gradient(180deg,var(--bg0),var(--bg1) 40%,var(--bg2));color:var(--cream);min-height:100vh;line-height:1.6}
-img,svg{display:block;max-width:100%}
-a{color:inherit;text-decoration:none}
-button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
-:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhone Duo 抢购助手 - yxy</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #0a0e1a;
+            color: #e5e7eb;
+            min-height: 100vh;
+        }
 
-/* ===== 视图切换 ===== */
-.view{display:none}
-.view.active{display:block;animation:viewIn .35s ease both}
-.wheel-view.active{display:flex}
-@keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@keyframes glowPulse{0%,100%{box-shadow:0 0 30px rgba(255,111,181,.35),0 0 70px rgba(255,92,158,.22)}50%{box-shadow:0 0 48px rgba(255,111,181,.6),0 0 100px rgba(255,92,158,.4)}}
-@keyframes floatUp{0%{transform:translateY(0) rotate(0) scale(.5);opacity:0}12%{opacity:.85}100%{transform:translateY(-140px) rotate(18deg) scale(1.2);opacity:0}}
-@keyframes btnBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.hero-floats{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1}
-.hero-floats span{position:absolute;bottom:-60px;opacity:0;animation:floatUp linear infinite}
+        /* 顶部导航 */
+        .top-bar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .top-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .logo-icon {
+            width: 20px;
+            height: 24px;
+            background: #fff;
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>') center/contain no-repeat;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>') center/contain no-repeat;
+        }
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            background: #334155;
+            color: #94a3b8;
+        }
+        .status-badge.running {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+        .status-badge.waiting {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+        }
+        .sys-time {
+            font-size: 13px;
+            color: #94a3b8;
+            font-family: "SF Mono", Menlo, monospace;
+        }
 
-.container{max-width:1080px;margin:0 auto;padding:0 20px}
+        /* 主布局 */
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px 20px;
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 24px;
+        }
 
-/* ===== 按钮 ===== */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font-weight:700;transition:transform .2s ease,box-shadow .2s ease,opacity .2s;white-space:nowrap}
-.btn:active{transform:scale(.97)}
-.btn-gold{background:linear-gradient(135deg,var(--gold-deep),var(--gold));color:#fff;box-shadow:0 2px 16px rgba(230,69,139,.45)}
-.btn-gold:hover{transform:scale(1.04)}
-.btn-red{background:linear-gradient(135deg,#FF5C9E,#FF7BBE);color:#fff;box-shadow:0 4px 24px rgba(255,92,158,.5),0 0 50px rgba(255,111,181,.25)}
-.btn-red:hover{transform:scale(1.04)}
-.btn-ghost{background:rgba(255,255,255,.65);border:1px solid rgba(230,69,139,.4);color:var(--cream)}
-.btn-ghost:hover{background:rgba(255,255,255,.85)}
-.btn-lg{padding:15px 44px;font-size:18px}
-.btn-md{padding:10px 22px;font-size:15px}
-.btn[disabled],.btn.disabled{opacity:.55;cursor:not-allowed;transform:none!important;box-shadow:none}
+        /* 左侧商品卡 */
+        .product-card {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #334155;
+            border-radius: 16px;
+            overflow: hidden;
+            position: sticky;
+            top: 80px;
+        }
+        .product-img {
+            height: 320px;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .product-tag {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: #f59e0b;
+            color: #000;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            z-index: 2;
+        }
+        .view-toggle {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            border-radius: 999px;
+            padding: 4px;
+            z-index: 2;
+            border: 1px solid #334155;
+        }
+        .view-toggle button {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 12px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .view-toggle button.active {
+            background: #3b82f6;
+            color: #fff;
+        }
 
-/* ===== 顶部导航 ===== */
-.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;max-width:1120px;margin:0 auto}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--cute);font-weight:900;font-size:20px;color:var(--gold-deep);text-shadow:0 0 12px rgba(255,111,181,.4)}
-.brand-logo{width:30px;height:30px;flex:0 0 auto}
-.brand-arrow{font-size:15px;font-family:var(--sans)}
+        /* CSS绘制 iPhone Duo 折叠状态 */
+        .fold-phone {
+            width: 200px;
+            height: 240px;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+        .phone-half {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            border-radius: 18px;
+            background: linear-gradient(145deg, #1e3a5f 0%, #0f1e36 50%, #0a1628 100%);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            transition: all 0.5s ease;
+        }
+        .phone-half.left {
+            left: 0;
+            border-right: none;
+            border-radius: 18px 4px 4px 18px;
+        }
+        .phone-half.right {
+            right: 0;
+            border-left: none;
+            border-radius: 4px 18px 18px 4px;
+        }
+        .phone-hinge {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 6px;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, #2a3f5f, #475569, #2a3f5f);
+            z-index: 2;
+            border-radius: 2px;
+            transition: all 0.5s ease;
+        }
+        .camera-module {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 44px;
+            height: 44px;
+            background: rgba(30, 58, 95, 0.8);
+            border-radius: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            padding: 6px;
+            gap: 4px;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .camera-lens {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #4a6fa5, #1a2d4a 70%);
+            box-shadow: inset 0 0 2px rgba(255,255,255,0.2);
+        }
+        .apple-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 32px;
+            height: 38px;
+            background: rgba(255,255,255,0.12);
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>') center/contain no-repeat;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>') center/contain no-repeat;
+        }
 
-/* ===== Hero ===== */
-.hero{position:relative;overflow:hidden;text-align:center;padding:70px 20px 78px;
-  background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.35) 45%,rgba(255,239,246,.94)),
-    url('https://aka.doubaocdn.com/s/U3QRpBCWj1') center 26%/cover no-repeat}
-.hero::before{content:"";position:absolute;left:50%;top:20px;transform:translateX(-50%);width:min(90vw,460px);height:420px;border-radius:50%;background:radial-gradient(circle,rgba(255,111,181,.22),transparent 65%);pointer-events:none}
-.hero>*{position:relative;z-index:1}
-.hero-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:999px;font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--gold-deep);border:1px solid rgba(230,69,139,.45);background:rgba(255,255,255,.72);backdrop-filter:blur(6px)}
-.hero-title{font-family:var(--cute);font-weight:900;font-size:clamp(42px,11vw,66px);color:var(--gold-deep);text-shadow:0 0 26px rgba(255,111,181,.35),0 3px 6px rgba(161,19,91,.15);margin:24px 0 14px;letter-spacing:.06em}
-.hero-sub{font-size:clamp(16px,4.2vw,20px);color:var(--cream);max-width:560px;margin:0 auto 32px}
-.hero-sub br{display:none}
-.hero-hint{margin-top:20px;font-size:13px;color:var(--cream-50);letter-spacing:.05em}
+        /* 展开状态 */
+        .fold-phone.expanded {
+            width: 380px;
+            height: 260px;
+        }
+        .fold-phone.expanded .phone-half.left {
+            width: calc(50% - 3px);
+            border-radius: 18px 0 0 18px;
+        }
+        .fold-phone.expanded .phone-half.right {
+            width: calc(50% - 3px);
+            border-radius: 0 18px 18px 0;
+        }
+        .fold-phone.expanded .phone-hinge {
+            width: 6px;
+            opacity: 0.7;
+        }
+        .fold-phone.expanded .inner-screen {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-radius: 12px;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .fold-phone.expanded .inner-screen::before {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 28px;
+            background: rgba(0,0,0,0.8);
+            border-radius: 20px;
+        }
+        .fold-phone.expanded .camera-module {
+            z-index: 3;
+        }
 
-/* ===== 区块标题 ===== */
-.section{padding:58px 0 0}
-.section-head{text-align:center;margin-bottom:36px}
-.section-eyebrow{display:inline-flex;align-items:center;gap:12px;color:var(--gold-deep);font-weight:700;font-size:13px;letter-spacing:.3em}
-.section-eyebrow::before,.section-eyebrow::after{content:"";width:34px;height:1px}
-.section-eyebrow::before{background:linear-gradient(90deg,transparent,var(--gold-deep))}
-.section-eyebrow::after{background:linear-gradient(90deg,var(--gold-deep),transparent)}
-.section-title{font-family:var(--cute);font-weight:900;font-size:clamp(26px,6.5vw,34px);color:var(--gold-deep);margin-top:12px;text-shadow:0 0 14px rgba(255,111,181,.3)}
+        /* 星光白色配色 */
+        .fold-phone.white .phone-half {
+            background: linear-gradient(145deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+        }
+        .fold-phone.white .camera-module {
+            background: rgba(255,255,255,0.7);
+        }
+        .fold-phone.white .camera-lens {
+            background: radial-gradient(circle at 30% 30%, #94a3b8, #475569 70%);
+        }
+        .fold-phone.white .apple-logo {
+            background: rgba(0,0,0,0.12);
+        }
+        .fold-phone.white .phone-hinge {
+            background: linear-gradient(90deg, #e2e8f0, #f1f5f9, #e2e8f0);
+        }
 
-/* ===== 奖品一览 ===== */
-.prize-grid{display:grid;grid-template-columns:1fr;gap:14px}
-@media(min-width:540px){.prize-grid{grid-template-columns:repeat(2,1fr);gap:16px}}
-@media(min-width:920px){.prize-grid{grid-template-columns:repeat(4,1fr);gap:20px}}
-.prize-card{text-align:center;padding:28px 16px 24px;border-radius:18px;background:linear-gradient(160deg,rgba(255,111,181,.22),rgba(255,200,224,.30));border:1px solid rgba(230,69,139,.35);box-shadow:0 6px 22px rgba(255,111,181,.18);transition:transform .25s ease}
-.prize-card:hover{transform:translateY(-4px) scale(1.02)}
-.prize-icon{width:54px;height:54px;margin:0 auto 14px;padding:12px;border-radius:16px;color:var(--gold-deep);background:rgba(255,111,181,.14);border:1px solid rgba(230,69,139,.35)}
-.prize-level{font-size:12px;font-weight:800;letter-spacing:.24em;color:var(--gold-deep);margin-bottom:6px}
-.prize-name{font-family:var(--serif);font-weight:700;font-size:17px;color:var(--cream);margin-bottom:12px;line-height:1.35}
-.prize-quota{display:inline-block;font-size:12px;padding:4px 13px;border-radius:999px;color:var(--gold-deep);background:rgba(255,111,181,.16);border:1px solid rgba(230,69,139,.4)}
+        .product-info {
+            padding: 20px;
+        }
+        .product-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .product-sub {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .product-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .product-price span {
+            font-size: 14px;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+        .preorder-info {
+            font-size: 12px;
+            color: #fbbf24;
+            margin-bottom: 20px;
+            padding: 8px 12px;
+            background: rgba(251, 191, 36, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
 
-/* ===== 参与流程 ===== */
-.steps{display:grid}
-@media(min-width:760px){.steps{grid-template-columns:repeat(4,1fr)}}
-.step{display:flex;gap:16px;align-items:flex-start;padding:0 4px 26px}
-@media(min-width:760px){.step{flex-direction:column;align-items:center;text-align:center;padding:0 10px}}
-.step-rail{flex:0 0 auto;width:56px;display:flex;flex-direction:column;align-items:center}
-@media(min-width:760px){.step-rail{width:auto}}
-.step-dot{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,#FF7BBE,#D6336C);box-shadow:0 4px 14px rgba(255,92,158,.4);border:1px solid rgba(255,255,255,.6);z-index:1}
-.step-line{flex:1;width:2px;margin-top:6px;background:linear-gradient(180deg,rgba(255,111,181,.5),rgba(255,111,181,.1))}
-@media(min-width:760px){.step-line{display:none}}
-.step-body{flex:1;min-width:0}
-@media(min-width:760px){.step-body{margin-top:16px}}
-.step-no{font-size:12px;font-weight:800;letter-spacing:.22em;color:var(--gold-deep)}
-.step-title{font-weight:700;font-size:16px;color:var(--cream);margin:2px 0 4px}
-.step-desc{font-size:14px;color:var(--cream-70)}
+        .config-group {
+            margin-bottom: 16px;
+        }
+        .config-label {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+        .color-options {
+            display: flex;
+            gap: 10px;
+        }
+        .color-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .color-btn.active {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        .color-night { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); }
+        .color-starlight { background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%); }
 
-/* ===== 活动规则 ===== */
-.rules-card{max-width:640px;margin:0 auto;border-radius:20px;padding:30px 26px;background:linear-gradient(160deg,rgba(255,111,181,.16),rgba(255,200,224,.24));border:1px solid rgba(230,69,139,.28);backdrop-filter:blur(8px)}
-.rule{display:flex;gap:12px;padding:9px 0;font-size:14.5px;color:var(--cream)}
-.rule-num{flex:0 0 22px;height:22px;margin-top:1px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;background:linear-gradient(135deg,#FF7BBE,#D6336C)}
+        .capacity-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .cap-btn {
+            padding: 10px;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            background: #0f172a;
+            color: #e5e7eb;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .cap-btn.active {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .cap-btn .price {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
 
-/* ===== 主办方联系 ===== */
-.contact{padding:58px 0 64px;text-align:center}
-.contact-card{display:inline-flex;flex-direction:column;align-items:center;gap:6px;padding:32px 46px;border-radius:20px;background:linear-gradient(160deg,rgba(255,111,181,.18),rgba(255,200,224,.22));border:1px solid rgba(230,69,139,.36)}
-.contact-label{font-size:13px;color:var(--cream-70)}
-.contact-id{font-family:var(--serif);font-weight:900;font-size:30px;letter-spacing:.1em;color:var(--gold);text-shadow:0 0 14px rgba(245,200,66,.35)}
-.contact-sub{font-size:12px;color:var(--cream-50);margin-bottom:8px}
-.contact-copy{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,#FF7BBE,#D6336C)}
-.contact-copy:hover{filter:brightness(1.08)}
+        .spec-list {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #334155;
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 2;
+        }
+        .spec-list li {
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+        }
+        .spec-list li span:last-child { color: #e5e7eb; }
 
-/* ===== 页脚 ===== */
-.footer{text-align:center;padding:6px 20px 26px;font-size:12px;color:var(--cream-50)}
+        /* 右侧操作区 */
+        .panel {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .panel-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid #1e293b;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .panel-body {
+            padding: 18px;
+        }
 
-/* ===== 转盘视图 ===== */
-.wheel-view{min-height:100vh;flex-direction:column;background:radial-gradient(900px 480px at 50% -80px,rgba(255,111,181,.22),transparent 60%),linear-gradient(180deg,var(--bg0),var(--bg1) 55%,var(--bg2))}
-.wheel-top{position:relative;text-align:center;padding:38px 20px 8px}
-.back-btn{position:absolute;left:16px;top:34px;display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:999px;font-size:13.5px;font-weight:700;color:var(--gold-deep);background:rgba(255,255,255,.7);border:1px solid rgba(230,69,139,.4);transition:background .2s}
-.back-btn:hover{background:rgba(255,255,255,.9)}
-.wheel-title{font-family:var(--serif);font-weight:900;font-size:clamp(27px,7.5vw,36px);color:var(--gold);text-shadow:0 0 18px rgba(245,200,66,.45);letter-spacing:.05em}
-.wheel-sub{font-size:14px;color:var(--cream-70);margin-top:5px}
-.wheel-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 20px 44px}
-.wheel-wrap{position:relative;width:min(80vw,340px);aspect-ratio:1;margin-top:8px}
-.wheel-frame{position:absolute;inset:-16px;border-radius:50%;background:conic-gradient(from 30deg,#FF9CCD,#FF5C9E,#D6336C,#FF9CCD);padding:6px;box-shadow:0 0 46px rgba(255,111,181,.4),0 0 90px rgba(255,92,158,.32);animation:glowPulse 3s ease-in-out infinite}
-.wheel-frame::before{content:"";position:absolute;inset:6px;border-radius:50%;background:radial-gradient(circle at 50% 32%,#FFE3F0,#FFCBE0 78%)}
-.rotor{position:absolute;inset:6px;border-radius:50%;overflow:hidden;transform:rotate(0deg);will-change:transform}
-.rotor svg{width:100%;height:100%;display:block}
-.pointer{position:absolute;top:-22px;left:50%;transform:translateX(-50%);z-index:6;width:40px;height:44px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.45))}
-/* 修正箭头方向：指向转盘内部 */
-.pointer svg{transform:rotate(180deg)}
-.spin-btn{margin-top:34px;animation:btnBounce 2.2s ease-in-out infinite}
-.wheel-note{margin-top:16px;font-size:12.5px;color:var(--cream-50);letter-spacing:.05em}
-.wheel-footer{padding:14px 20px 22px;text-align:center;font-size:12px;color:var(--cream-50)}
+        /* 倒计时 */
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            padding: 10px 0;
+        }
+        .cd-item {
+            text-align: center;
+        }
+        .cd-num {
+            font-size: 36px;
+            font-weight: 700;
+            font-family: "SF Mono", Menlo, monospace;
+            color: #fff;
+            background: #1e293b;
+            padding: 10px 16px;
+            border-radius: 12px;
+            min-width: 70px;
+        }
+        .cd-text {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 6px;
+        }
 
-/* ===== 结果弹窗 ===== */
-.modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(255,222,238,.55);backdrop-filter:blur(6px)}
-.modal[hidden]{display:none}
-.modal-card{width:min(92vw,370px);text-align:center;border-radius:24px;padding:38px 26px 28px;background:linear-gradient(170deg,#FFE3F0,#FFD0E4);border:1px solid rgba(230,69,139,.4);box-shadow:0 20px 60px rgba(230,69,139,.25),0 0 70px rgba(255,111,181,.16);animation:pop .35s cubic-bezier(.2,1.4,.4,1) both}
-@keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
-.modal-icon{width:78px;height:78px;margin:0 auto 18px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-deep);background:radial-gradient(circle at 35% 30%,rgba(255,111,181,.28),rgba(214,51,108,.28));border:1px solid rgba(230,69,139,.5)}
-.modal-title{font-family:var(--serif);font-weight:900;font-size:25px;color:var(--gold)}
-.modal-prize{margin-top:9px;font-size:19px;font-weight:700;color:var(--cream)}
-.modal-desc{margin-top:10px;font-size:14px;color:var(--cream-70);line-height:1.7}
-.modal-contact{margin:18px auto 0;padding:13px 15px;border-radius:12px;background:rgba(255,111,181,.12);border:1px dashed rgba(230,69,139,.5);font-size:13px;color:var(--cream-70);line-height:1.7;text-align:left}
-.modal-contact b{color:var(--gold)}
-.modal .btn{margin-top:24px;width:100%}
+        /* 配置网格 */
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        .config-item label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+        .config-item input, .config-item select {
+            width: 100%;
+            background: #0a0e1a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 8px 10px;
+            color: #e5e7eb;
+            font-size: 13px;
+            outline: none;
+        }
+        .config-item input:focus, .config-item select:focus {
+            border-color: #3b82f6;
+        }
 
-/* ===== Toast ===== */
-.toast{position:fixed;left:50%;top:22px;transform:translateX(-50%);z-index:60;padding:10px 20px;border-radius:999px;background:rgba(255,239,246,.96);border:1px solid rgba(230,69,139,.5);color:var(--gold-deep);font-size:14px;font-weight:700;box-shadow:0 8px 24px rgba(230,69,139,.25);white-space:nowrap}
-.toast[hidden]{display:none}
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        .stat-card {
+            background: #0a0e1a;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+        .stat-num {
+            font-size: 22px;
+            font-weight: 700;
+            font-family: "SF Mono", Menlo, monospace;
+            margin-bottom: 4px;
+        }
+        .stat-num.success { color: #22c55e; }
+        .stat-num.fail { color: #ef4444; }
+        .stat-num.try { color: #3b82f6; }
+        .stat-num.time { color: #f59e0b; }
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+        }
 
-@media (prefers-reduced-motion:reduce){
-  *{animation:none!important;transition-duration:.01ms!important}
-}
+        /* 操作按钮 */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-start {
+            background: #22c55e;
+            color: #fff;
+        }
+        .btn-start:hover { background: #16a34a; }
+        .btn-start:disabled {
+            background: #334155;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+        .btn-stop {
+            background: #ef4444;
+            color: #fff;
+        }
+        .btn-stop:hover { background: #dc2626; }
+        .btn-stop:disabled {
+            background: #334155;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+        .btn-reset {
+            background: #334155;
+            color: #e5e7eb;
+            flex: 0.5;
+        }
+        .btn-reset:hover { background: #475569; }
 
-/* ===== 订单表单 & 按IP查询 ===== */
-.order-form{display:flex;flex-direction:column;gap:11px;margin-top:14px;text-align:left}
-.order-field{display:flex;flex-direction:column;gap:5px}
-.order-field label{font-size:13px;font-weight:700;color:var(--gold-deep)}
-.order-field input,.order-field textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(230,69,139,.4);background:#fff;color:#A1135B;font-size:14px;font-family:inherit;outline:none}
-.order-field input:focus,.order-field textarea:focus{border-color:var(--gold-deep);box-shadow:0 0 0 3px rgba(255,111,181,.15)}
-.query-row input{flex:1;min-width:0;padding:10px 12px;border-radius:10px;border:1px solid rgba(230,69,139,.4);background:#fff;color:#A1135B;font-size:14px;font-family:inherit;outline:none}
-.query-row input:focus{border-color:var(--gold-deep);box-shadow:0 0 0 3px rgba(255,111,181,.15)}
-.query-row .btn{width:auto;flex:0 0 auto;margin-top:0;padding:10px 20px;min-width:76px}
-.order-submit{width:100%}
-.order-note{font-size:12px;color:var(--cream-70);margin-top:2px;text-align:center}
-.query-row{display:flex;gap:8px;margin-top:12px}
-.query-row input{flex:1}
-.query-ip-hint{font-size:12px;color:var(--cream-70);margin-top:8px;text-align:center}
-.query-ip-hint b{color:var(--gold-deep)}
-.query-result{margin-top:14px;text-align:left;max-height:230px;overflow:auto;display:flex;flex-direction:column;gap:10px}
-.query-item{background:rgba(255,255,255,.65);border:1px solid rgba(230,69,139,.25);border-radius:12px;padding:11px 13px;font-size:13.5px;color:var(--cream);line-height:1.7}
-.query-item b{color:var(--gold-deep)}
-.iptag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:999px;background:rgba(255,111,181,.15);color:var(--gold-deep);border:1px solid rgba(230,69,139,.3)}
-.query-empty{text-align:center;color:var(--cream-70);font-size:14px;padding:14px 0}
-</style>
+        /* 日志区 */
+        .log-box {
+            height: 280px;
+            background: #0a0e1a;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 12px;
+            font-family: "SF Mono", Menlo, Consolas, monospace;
+            font-size: 12px;
+            line-height: 1.8;
+            overflow-y: auto;
+        }
+        .log-line { color: #94a3b8; }
+        .log-line.success { color: #22c55e; }
+        .log-line.warning { color: #fbbf24; }
+        .log-line.error { color: #ef4444; }
+        .log-line.info { color: #60a5fa; }
+
+        /* 成功弹窗 */
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .success-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #334155;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .success-modal.show .modal-content {
+            transform: scale(1);
+        }
+        .modal-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 20px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: #fff;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            50% { box-shadow: 0 0 0 16px rgba(34, 197, 94, 0); }
+        }
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        .modal-sub {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 24px;
+        }
+        .order-info {
+            background: #0a0e1a;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: left;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        .order-info li {
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #1e293b;
+        }
+        .order-info li:last-child { border-bottom: none; }
+        .order-info li span:first-child { color: #64748b; }
+        .pay-countdown {
+            color: #ef4444;
+            font-weight: 600;
+        }
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            background: #22c55e;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .modal-btn:hover { background: #16a34a; }
+
+        /* 免责 */
+        .disclaimer {
+            max-width: 1400px;
+            margin: 0 auto 30px;
+            padding: 16px 20px;
+            background: rgba(251, 191, 36, 0.05);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 12px;
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+        .disclaimer strong { color: #fbbf24; }
+
+        @media (max-width: 1000px) {
+            .main { grid-template-columns: 1fr; }
+            .product-card { position: static; }
+            .config-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .cd-num { font-size: 28px; padding: 8px 12px; min-width: 55px; }
+            .fold-phone.expanded { width: 320px; height: 220px; }
+        }
+    </style>
 </head>
 <body>
 
-<!-- ===== 视图：活动首页 ===== -->
-<div class="view" data-route="/" id="view-home">
-  <nav class="nav">
-    <a class="brand" href="#/" aria-label="鸿联九五 首页">
-      <svg class="brand-logo" viewBox="0 0 32 32" aria-hidden="true">
-        <circle cx="16" cy="16" r="14.5" fill="none" stroke="#F5C842" stroke-width="2"/>
-        <circle cx="16" cy="16" r="5" fill="#F5C842"/>
-        <path d="M16 1.5v9M16 21.5v9M1.5 16h9M21.5 16h9M5.7 5.7l6.4 6.4M19.9 19.9l6.4 6.4M26.3 5.7l-6.4 6.4M12.1 19.9l-6.4 6.4" stroke="#F5C842" stroke-width="1.6" stroke-linecap="round"/>
-      </svg>
-      <span>鸿联九五</span>
-    </a>
-    <button class="btn btn-ghost btn-md" id="nav-query-btn" type="button" style="margin-right:10px">查询订单</button>
-    <a class="btn btn-gold btn-md" href="#/wheel">立即抽奖 <span class="brand-arrow">→</span></a>
-  </nav>
-
-  <header class="hero">
-    <span class="hero-badge">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 4.6 5 .4-3.8 3.3 1.1 4.9L12 13.6 7.8 16.2l1.1-4.9L5.1 8l5-.4z"/></svg>
-      双十一购物狂欢节 · 幸运大转盘
-    </span>
-    <h1 class="hero-title">鸿联九五</h1>
-    <p class="hero-sub">双十一购物狂欢节，转出你的好运大奖！<br>小米汽车、iPhone 等超值大奖等你来拿！</p>
-    <a class="btn btn-red btn-lg" href="#/wheel">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v5.1M12 15.5v5.1M3.4 12h5.1M15.5 12h5.1M6.4 6.4l3.6 3.6M14 14l3.6 3.6M17.6 6.4L14 10M10 14l-3.6 3.6"/></svg>
-      立即参与抽奖
-    </a>
-    <p class="hero-hint">每人限一次抽奖机会 · 结果随机 · 中奖实物寄送</p>
-<div class="hero-floats" aria-hidden="true"><span style="left:6%;animation-duration:6s;animation-delay:0s"><svg width="30" height="30" viewBox="0 0 24 24" fill="#FF7BBE"><path d="M12 21s-7.5-4.7-9.5-9A5.2 5.2 0 0 1 12 5.5 5.2 5.2 0 0 1 21.5 12c-2 4.3-9.5 9-9.5 9z"/></svg></span><span style="left:18%;animation-duration:7.5s;animation-delay:1.2s"><svg width="20" height="20" viewBox="0 0 24 24" fill="#FF9CD2"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg></span><span style="left:35%;animation-duration:6.5s;animation-delay:2.1s"><svg width="30" height="30" viewBox="0 0 24 24" fill="#FF7BBE"><path d="M12 21s-7.5-4.7-9.5-9A5.2 5.2 0 0 1 12 5.5 5.2 5.2 0 0 1 21.5 12c-2 4.3-9.5 9-9.5 9z"/></svg></span><span style="left:50%;animation-duration:8s;animation-delay:.6s"><svg width="20" height="20" viewBox="0 0 24 24" fill="#FF9CD2"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg></span><span style="left:66%;animation-duration:6.8s;animation-delay:1.8s"><svg width="30" height="30" viewBox="0 0 24 24" fill="#FF7BBE"><path d="M12 21s-7.5-4.7-9.5-9A5.2 5.2 0 0 1 12 5.5 5.2 5.2 0 0 1 21.5 12c-2 4.3-9.5 9-9.5 9z"/></svg></span><span style="left:80%;animation-duration:7s;animation-delay:.3s"><svg width="20" height="20" viewBox="0 0 24 24" fill="#FF9CD2"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg></span><span style="left:92%;animation-duration:6.2s;animation-delay:2.6s"><svg width="30" height="30" viewBox="0 0 24 24" fill="#FF7BBE"><path d="M12 21s-7.5-4.7-9.5-9A5.2 5.2 0 0 1 12 5.5 5.2 5.2 0 0 1 21.5 12c-2 4.3-9.5 9-9.5 9z"/></svg></span></div>
-  </header>
-
-  <main class="container">
-    <section class="section" aria-labelledby="prize-title">
-      <div class="section-head">
-        <span class="section-eyebrow">PRIZE LIST</span>
-        <h2 class="section-title" id="prize-title">奖品一览</h2>
-      </div>
-      <div class="prize-grid">
-        <div class="prize-card">
-          <div class="prize-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13l1.7-4.3A2 2 0 0 1 7.6 7.5h8.8a2 2 0 0 1 1.9 1.2L20 13"/><path d="M3.5 13h17v3.2a1 1 0 0 1-1 1H18a1 1 0 0 1-1-1V16H7v.2a1 1 0 0 1-1 1H4.5a1 1 0 0 1-1-1V13z"/><circle cx="7" cy="16.6" r="1.1"/><circle cx="17" cy="16.6" r="1.1"/></svg>
-          </div>
-          <div class="prize-level">特等奖</div>
-          <div class="prize-name">小米汽车</div>
-          <span class="prize-quota">名额 1 人</span>
+<!-- 顶部 -->
+<div class="top-bar">
+    <div class="top-inner">
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <span>iPhone Duo 抢购助手 <span style="font-size:11px;color:#64748b;font-weight:400;">v3.1 模拟版</span></span>
         </div>
-        <div class="prize-card">
-          <div class="prize-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.6"/><path d="M11 18.6h2"/><circle cx="9.4" cy="6" r=".8"/><circle cx="14.6" cy="6" r=".8"/></svg>
-          </div>
-          <div class="prize-level">一等奖</div>
-          <div class="prize-name">iPhone Duo</div>
-          <span class="prize-quota">名额 2 人</span>
-        </div>
-        <div class="prize-card">
-          <div class="prize-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.6"/><path d="M11 18.6h2"/></svg>
-          </div>
-          <div class="prize-level">二等奖</div>
-          <div class="prize-name">iPhone 18 Pro Max</div>
-          <span class="prize-quota">名额 3 人</span>
-        </div>
-        <div class="prize-card">
-          <div class="prize-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.6"/><path d="M11 18.6h2"/></svg>
-          </div>
-          <div class="prize-level">三等奖</div>
-          <div class="prize-name">iPhone 18 Pro</div>
-          <span class="prize-quota">名额 5 人</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" aria-labelledby="steps-title">
-      <div class="section-head">
-        <span class="section-eyebrow">HOW TO JOIN</span>
-        <h2 class="section-title" id="steps-title">参与流程</h2>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-rail">
-            <div class="step-dot">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9V7.2A1.7 1.7 0 0 1 5.2 5.5h13.6a1.7 1.7 0 0 1 1.7 1.7V9"/><path d="M3.5 15v1.8a1.7 1.7 0 0 0 1.7 1.7h13.6a1.7 1.7 0 0 0 1.7-1.7V15"/><path d="M15 5.5v13M18.5 9.5v.01M18.5 14.5v.01"/></svg>
+        <div style="display:flex;align-items:center;gap:20px;">
+            <div class="status-badge waiting" id="statusBadge">
+                <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#fbbf24;margin-right:6px;"></span>
+                等待预购
             </div>
-            <div class="step-line"></div>
-          </div>
-          <div class="step-body">
-            <div class="step-no">STEP 01</div>
-            <div class="step-title">进入活动</div>
-            <div class="step-desc">点击「立即抽奖」进入转盘页</div>
-          </div>
+            <div class="sys-time" id="sysTime">--:--:--</div>
         </div>
-        <div class="step">
-          <div class="step-rail">
-            <div class="step-dot">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v5.1M12 15.5v5.1M3.4 12h5.1M15.5 12h5.1M6.4 6.4l3.6 3.6M14 14l3.6 3.6M17.6 6.4L14 10M10 14l-3.6 3.6"/></svg>
-            </div>
-            <div class="step-line"></div>
-          </div>
-          <div class="step-body">
-            <div class="step-no">STEP 02</div>
-            <div class="step-title">转动转盘</div>
-            <div class="step-desc">点击「开始抽奖」转动幸运转盘</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-rail">
-            <div class="step-dot">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="8" width="17" height="4.6" rx="1.2"/><path d="M12 8v12.5M5 12.6V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7.4"/><path d="M12 8c-2.1 0-4.6-1.6-3.6-4.1.9-2.3 4.6-.4 3.6 4.1zM12 8c2.1 0 4.6-1.6 3.6-4.1-.9-2.3-4.6-.4-3.6 4.1z"/></svg>
-            </div>
-            <div class="step-line"></div>
-          </div>
-          <div class="step-body">
-            <div class="step-no">STEP 03</div>
-            <div class="step-title">揭晓结果</div>
-            <div class="step-desc">等待转盘停止，查看中奖结果</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-rail">
-            <div class="step-dot">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4a1.6 1.6 0 0 1 1.5-1h3A1.6 1.6 0 0 1 15 4v.8H9V4z"/><path d="M9 10.5h6M9 14h6M9 17.5h3.5"/></svg>
-            </div>
-            <div class="step-line"></div>
-          </div>
-          <div class="step-body">
-            <div class="step-no">STEP 04</div>
-            <div class="step-title">填写信息</div>
-            <div class="step-desc">中奖后填写收货信息即可</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" aria-labelledby="rules-title">
-      <div class="section-head">
-        <span class="section-eyebrow">RULES</span>
-        <h2 class="section-title" id="rules-title">活动规则</h2>
-      </div>
-      <div class="rules-card">
-        <div class="rule"><span class="rule-num">1</span><span>每位参与者仅有一次抽奖机会，请珍惜使用。</span></div>
-        <div class="rule"><span class="rule-num">2</span><span>抽奖结果以转盘指针停止位置为准，结果随机生成。</span></div>
-        <div class="rule"><span class="rule-num">3</span><span>中奖者需在结果页填写真实姓名、手机号和收货地址。</span></div>
-        <div class="rule"><span class="rule-num">4</span><span>奖品将在活动结束后 15 个工作日内寄出。</span></div>
-        <div class="rule"><span class="rule-num">5</span><span>本活动最终解释权归主办方所有。</span></div>
-      </div>
-    </section>
-
-    <section class="contact" aria-labelledby="contact-title">
-      <h2 class="section-title" id="contact-title" style="margin-bottom:26px">咨询方式</h2>
-      <div class="contact-card">
-        <span class="contact-label">主办方微信号</span>
-        <span class="contact-id" id="wechat-id">CAI-YUXIN-</span>
-        <span class="contact-sub">如有疑问请添加微信咨询</span>
-        <button class="contact-copy" id="copy-btn" type="button">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          复制微信号
-        </button>
-        <button class="btn btn-ghost btn-md" id="contact-query-btn" type="button" style="margin-top:14px">查询订单（按IP）</button>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">© 2026 鸿联九五 · 双十一购物狂欢节</footer>
+    </div>
 </div>
 
-<!-- ===== 视图：幸运大转盘 ===== -->
-<div class="view wheel-view" data-route="/wheel" id="view-wheel">
-  <header class="wheel-top">
-    <button class="back-btn" id="back-btn" type="button" aria-label="返回首页">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
-      返回
-    </button>
-    <h1 class="wheel-title">双十一幸运大转盘</h1>
-    <p class="wheel-sub">点击按钮，转出你的双十一好运～</p>
-  </header>
+<div class="main">
+    <!-- 左侧商品 -->
+    <div class="product-card">
+        <div class="product-img">
+            <span class="product-tag">新款预购</span>
+            
+            <div class="fold-phone" id="phonePreview">
+                <div class="phone-half left">
+                    <div class="camera-module">
+                        <div class="camera-lens"></div>
+                        <div class="camera-lens"></div>
+                    </div>
+                </div>
+                <div class="phone-hinge"></div>
+                <div class="phone-half right">
+                    <div class="apple-logo"></div>
+                </div>
+                <div class="inner-screen"></div>
+            </div>
 
-  <main class="wheel-stage">
-    <div class="wheel-wrap">
-      <div class="wheel-frame"></div>
-      <div class="pointer" aria-hidden="true">
-        <svg viewBox="0 0 40 46">
-          <path d="M20 2 38 42a3 3 0 0 1-2.7 4H4.7A3 3 0 0 1 2 42Z" fill="#FF9CD2" stroke="#D6336C" stroke-width="1.5"/>
-          <path d="M20 8 33.6 42H6.4Z" fill="#FF5C9E"/>
-        </svg>
-      </div>
-      <div class="rotor" id="rotor">
-        <svg viewBox="0 0 100 100" role="img" aria-label="幸运大转盘">
-          <!-- 扇区 -->
-          <g>
-            <path d="M 50 50 L 50 0 A 50 50 0 0 1 85.355 14.645 Z" fill="#FF5C9E"/>
-            <g transform="rotate(22.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#FFFFFF" font-size="3.4" font-weight="bold">特等奖</text><text x="50" y="29" text-anchor="middle" fill="#FFF8E7" font-size="2.5">小米汽车</text></g>
-          </g>
-          <g>
-            <path d="M 50 50 L 85.355 14.645 A 50 50 0 0 1 100 50 Z" fill="#FFD6E8"/>
-            <g transform="rotate(67.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#A1135B" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
-          </g>
-          <g>
-            <path d="M 50 50 L 100 50 A 50 50 0 0 1 85.355 85.355 Z" fill="#FF8FC7"/>
-            <g transform="rotate(112.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#FFFFFF" font-size="3.4" font-weight="bold">一等奖</text><text x="50" y="29" text-anchor="middle" fill="#3A2400" font-size="2.5">iPhone Duo</text></g>
-          </g>
-          <g>
-            <path d="M 50 50 L 85.355 85.355 A 50 50 0 0 1 50 100 Z" fill="#FFE3F0"/>
-            <g transform="rotate(157.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#A1135B" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
-          </g>
-          <g>
-            <path d="M 50 50 L 50 100 A 50 50 0 0 1 14.645 85.355 Z" fill="#FF7BBE"/>
-            <g transform="rotate(202.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#FFFFFF" font-size="3.4" font-weight="bold">二等奖</text><text x="50" y="29" text-anchor="middle" fill="#FFF8E7" font-size="2.5">18 Pro Max</text></g>
-          </g>
-          <g>
-            <path d="M 50 50 L 14.645 85.355 A 50 50 0 0 1 0 50 Z" fill="#FFD6E8"/>
-            <g transform="rotate(247.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#A1135B" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
-          </g>
-          <g>
-            <path d="M 50 50 L 0 50 A 50 50 0 0 1 14.645 14.645 Z" fill="#FF9CD2"/>
-            <g transform="rotate(292.5,50,50)"><text x="50" y="21.5" text-anchor="middle" fill="#FFFFFF" font-size="3.4" font-weight="bold">三等奖</text><text x="50" y="29" text-anchor="middle" fill="#3A2400" font-size="2.5">iPhone 18 Pro</text></g>
-          </g>
-          <g>
-            <path d="M 50 50 L 14.645 14.645 A 50 50 0 0 1 50 0 Z" fill="#FFCBE0"/>
-            <g transform="rotate(337.5,50,50)"><text x="50" y="22.5" text-anchor="middle" fill="#A1135B" font-size="3" font-weight="bold">幸运奖</text><text x="50" y="30.5" text-anchor="middle" fill="#F5C842" font-size="2.4">谢谢参与</text></g>
-          </g>
-          <!-- 边缘灯珠 -->
-          <g fill="#FF9CD2" opacity=".9">
-            <circle cx="102" cy="50" r="1.4"/><circle cx="98.04" cy="69.9" r="1.4" fill="#FF5C9E"/><circle cx="86.76" cy="86.76" r="1.4"/><circle cx="69.9" cy="98.04" r="1.4" fill="#FF6B6B"/>
-            <circle cx="50" cy="102" r="1.4"/><circle cx="30.1" cy="98.04" r="1.4" fill="#FF6B6B"/><circle cx="13.24" cy="86.76" r="1.4"/><circle cx="1.96" cy="69.9" r="1.4" fill="#FF6B6B"/>
-            <circle cx="-2" cy="50" r="1.4"/><circle cx="1.96" cy="30.1" r="1.4" fill="#FF6B6B"/><circle cx="13.24" cy="13.24" r="1.4"/><circle cx="30.1" cy="1.96" r="1.4" fill="#FF6B6B"/>
-            <circle cx="50" cy="-2" r="1.4"/><circle cx="69.9" cy="1.96" r="1.4" fill="#FF6B6B"/><circle cx="86.76" cy="13.24" r="1.4"/><circle cx="98.04" cy="30.1" r="1.4" fill="#FF6B6B"/>
-          </g>
-          <!-- 中心轴 -->
-          <circle cx="50" cy="50" r="9.5" fill="url(#hubGrad)"/>
-          <circle cx="50" cy="50" r="6" fill="#FFFFFF" opacity=".30"/>
-          <text x="50" y="55" text-anchor="middle" fill="#A1135B" font-size="6.4" font-weight="bold" font-family="serif">转</text>
-          <defs>
-            <radialGradient id="hubGrad" cx="35%" cy="30%" r="80%">
-              <stop offset="0%" stop-color="#FFD6E8"/>
-              <stop offset="100%" stop-color="#FF7BBE"/>
-            </radialGradient>
-          </defs>
-        </svg>
-      </div>
+            <div class="view-toggle">
+                <button class="active" data-view="fold">折叠</button>
+                <button data-view="expand">展开</button>
+            </div>
+        </div>
+        <div class="product-info">
+            <h2 class="product-name">iPhone Duo</h2>
+            <p class="product-sub">可折叠全面屏 · 钛金属边框<br>仅支持 eSIM · A20 Pro 芯片</p>
+            
+            <div class="product-price">
+                ¥<span id="basePrice">15,999</span>
+                <span>起 · 或 ¥667/月 (24期)</span>
+            </div>
+
+            <div class="preorder-info">
+                ⏰ 10 月 16 日晚 8 点开启预购 · 10 月 23 日正式发售
+            </div>
+
+            <div class="config-group">
+                <div class="config-label">选择颜色</div>
+                <div class="color-options">
+                    <div class="color-btn color-night active" data-color="night" data-name="夜空色"></div>
+                    <div class="color-btn color-starlight" data-color="starlight" data-name="星光白色"></div>
+                </div>
+                <div style="font-size:12px;color:#94a3b8;margin-top:8px;" id="colorName">夜空色</div>
+            </div>
+
+            <div class="config-group">
+                <div class="config-label">选择容量</div>
+                <div class="capacity-options">
+                    <div class="cap-btn active" data-cap="256" data-price="15999">
+                        256GB
+                        <div class="price">¥15,999</div>
+                    </div>
+                    <div class="cap-btn" data-cap="512" data-price="17999">
+                        512GB
+                        <div class="price">¥17,999</div>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="spec-list">
+                <li><span>内屏</span><span>7.6 英寸超视网膜 XDR</span></li>
+                <li><span>外屏</span><span>5.4 英寸超视网膜 XDR</span></li>
+                <li><span>芯片</span><span>A20 Pro</span></li>
+                <li><span>主摄</span><span>4800 万像素双摄</span></li>
+                <li><span>机身</span><span>钛金属边框 + 铰链护壳</span></li>
+                <li><span>外屏续航</span><span>最长 44 小时视频播放</span></li>
+                <li><span>内屏续航</span><span>最长 31 小时视频播放</span></li>
+                <li><span>包装</span><span>USB-C 充电线</span></li>
+            </ul>
+        </div>
     </div>
 
-    <button class="btn btn-red btn-lg spin-btn" id="spin-btn" type="button">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v5.1M12 15.5v5.1M3.4 12h5.1M15.5 12h5.1M6.4 6.4l3.6 3.6M14 14l3.6 3.6M17.6 6.4L14 10M10 14l-3.6 3.6"/></svg>
-      开始抽奖
-    </button>
-    <p class="wheel-note" id="chance-note">每人仅一次抽奖机会，请珍惜使用</p>
-  </main>
+    <!-- 右侧操作 -->
+    <div>
+        <!-- 倒计时 -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>⏱️</span> 距离预购开启
+            </div>
+            <div class="panel-body">
+                <div class="countdown">
+                    <div class="cd-item"><div class="cd-num" id="cdDay">00</div><div class="cd-text">天</div></div>
+                    <div class="cd-item"><div class="cd-num" id="cdHour">00</div><div class="cd-text">时</div></div>
+                    <div class="cd-item"><div class="cd-num" id="cdMinute">00</div><div class="cd-text">分</div></div>
+                    <div class="cd-item"><div class="cd-num" id="cdSecond">00</div><div class="cd-text">秒</div></div>
+                </div>
+            </div>
+        </div>
 
-  <footer class="wheel-footer">鸿联九五 · 双十一购物狂欢节</footer>
+        <!-- 抢购配置 -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>⚙️</span> 抢购配置
+            </div>
+            <div class="panel-body">
+                <div class="config-grid">
+                    <div class="config-item">
+                        <label>运行模式</label>
+                        <select id="runMode">
+                            <option value="timing">定时自动启动</option>
+                            <option value="instant">立即运行</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>目标时间</label>
+                        <input type="datetime-local" id="targetTime">
+                    </div>
+                    <div class="config-item">
+                        <label>重试间隔 (ms)</label>
+                        <input type="number" value="300" id="retryInterval">
+                    </div>
+                    <div class="config-item">
+                        <label>并发线程数</label>
+                        <input type="number" value="5" id="threadCount">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-start" id="startBtn">开始抢购</button>
+                    <button class="btn btn-stop" id="stopBtn" disabled>停止</button>
+                    <button class="btn btn-reset" id="resetBtn">重置</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 运行统计 -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>📊</span> 运行统计
+            </div>
+            <div class="panel-body">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-num try" id="tryCount">0</div>
+                        <div class="stat-label">已尝试次数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-num success" id="successCount">0</div>
+                        <div class="stat-label">成功次数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-num fail" id="failCount">0</div>
+                        <div class="stat-label">失败次数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-num time" id="runTime">0s</div>
+                        <div class="stat-label">运行时长</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 运行日志 -->
+        <div class="panel">
+            <div class="panel-header" style="justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span>📝</span> 运行日志
+                </div>
+                <button style="background:none;border:none;color:#64748b;font-size:12px;cursor:pointer;" id="clearLog">清空</button>
+            </div>
+            <div class="panel-body">
+                <div class="log-box" id="logBox">
+                    <div class="log-line">[系统] 程序初始化完成</div>
+                    <div class="log-line warning">[提示]  iPhone</div>
+                    <div class="log-line">[系统] 目标商品：iPhone Duo 256GB 夜空色</div>
+                    <div class="log-line">[系统] 预购时间：2025-10-16 20:00:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- ===== 结果弹窗 ===== -->
-<div class="modal" id="result-modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
-  <div class="modal-card">
-    <div class="modal-icon" id="modal-icon"></div>
-    <h2 class="modal-title" id="modal-title">恭喜中奖！</h2>
-    <p class="modal-prize" id="modal-prize"></p>
-    <p class="modal-desc" id="modal-desc"></p>
-    <p class="modal-contact" id="modal-contact" hidden>
-      中奖后请添加主办方微信 <b>CAI-YUXIN-</b>，登记收货信息（姓名 / 手机号 / 收货地址），奖品将在活动结束后 15 个工作日内寄出。
-    </p>
-    <div class="order-form" id="order-form" hidden>
-      <div class="order-field"><label>收货人姓名</label><input id="of-name" maxlength="30" placeholder="请输入真实姓名"/></div>
-      <div class="order-field"><label>手机号码</label><input id="of-phone" type="tel" maxlength="11" placeholder="请输入11位手机号"/></div>
-      <div class="order-field"><label>收货地址</label><textarea id="of-addr" rows="2" placeholder="省市区 + 详细街道门牌号"></textarea></div>
-      <button class="btn btn-red btn-md order-submit" id="order-submit" type="button">提交订单</button>
-      <p class="order-note">提交后将生成订单号，可凭 IP 查询订单</p>
+<!-- 成功弹窗 -->
+<div class="success-modal" id="successModal">
+    <div class="modal-content">
+        <div class="modal-icon">✓</div>
+        <div class="modal-title">抢购成功！</div>
+        <div class="modal-sub">订单已生成，请尽快完成支付</div>
+        <ul class="order-info">
+            <li><span>商品</span><span id="orderProduct">iPhone Duo 256GB 夜空色</span></li>
+            <li><span>订单号</span><span id="orderNo">—</span></li>
+            <li><span>金额</span><span id="orderPrice">¥15,999</span></li>
+            <li><span>支付剩余</span><span class="pay-countdown" id="payCountdown">15:00</span></li>
+        </ul>
+        <button class="modal-btn" id="closeModal">我知道了</button>
     </div>
-    <button class="btn btn-gold btn-md" id="modal-close" type="button">知道了</button>
-  </div>
 </div>
 
-<!-- ===== 查询订单弹窗（按IP） ===== -->
-<div class="modal" id="query-modal" hidden role="dialog" aria-modal="true" aria-labelledby="query-title">
-  <div class="modal-card">
-    <div class="modal-icon">
-      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7.2"/><path d="M16.5 16.5 21 21"/></svg>
-    </div>
-    <h2 class="modal-title" id="query-title">查询订单</h2>
-    <p class="modal-desc" style="margin-top:4px">按单个 IP 查询中奖订单</p>
-    <div class="query-row">
-      <input id="query-ip" placeholder="请输入订单号 或 IP 地址" />
-      <button class="btn btn-gold btn-md" id="query-do" type="button">查询</button>
-    </div>
-    <p class="query-ip-hint">当前设备 IP：<b id="my-ip">获取中…</b>，可输入订单号或 IP 查询</p>
-    <div class="query-result" id="query-result"></div>
-    <button class="btn btn-gold btn-md" id="query-close" type="button" style="width:100%;margin-top:6px">关闭</button>
-  </div>
+<div class="disclaimer">
+    <strong>⚠️ 免责声明</strong><br>
+   使用自动化工具抢购商品可能违反平台服务条款及相关法律法规，请遵守规则理性消费。
 </div>
-
-<!-- ===== Toast ===== -->
-<div class="toast" id="toast" hidden role="status"></div>
 
 <script>
-(function(){
-  var $ = function(id){ return document.getElementById(id); };
+    // 元素
+    const statusBadge = document.getElementById('statusBadge');
+    const sysTime = document.getElementById('sysTime');
+    const phonePreview = document.getElementById('phonePreview');
+    const colorName = document.getElementById('colorName');
+    const basePrice = document.getElementById('basePrice');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const clearLog = document.getElementById('clearLog');
+    const logBox = document.getElementById('logBox');
+    const tryCountEl = document.getElementById('tryCount');
+    const successCountEl = document.getElementById('successCount');
+    const failCountEl = document.getElementById('failCount');
+    const runTimeEl = document.getElementById('runTime');
+    const targetTimeInput = document.getElementById('targetTime');
+    const runMode = document.getElementById('runMode');
+    const cdDay = document.getElementById('cdDay');
+    const cdHour = document.getElementById('cdHour');
+    const cdMinute = document.getElementById('cdMinute');
+    const cdSecond = document.getElementById('cdSecond');
+    const successModal = document.getElementById('successModal');
+    const closeModal = document.getElementById('closeModal');
+    const orderNo = document.getElementById('orderNo');
+    const orderPrice = document.getElementById('orderPrice');
+    const orderProduct = document.getElementById('orderProduct');
+    const payCountdown = document.getElementById('payCountdown');
 
-  /* ---- 视图路由 ---- */
-  function go(){
-    var hash = location.hash || '#/';
-    var views = document.querySelectorAll('.view');
-    for (var i = 0; i < views.length; i++){
-      views[i].classList.toggle('active', '#' + views[i].getAttribute('data-route') === hash);
+    // 状态
+    let isRunning = false;
+    let runTimer = null;
+    let logTimer = null;
+    let countdownTimer = null;
+    let payTimer = null;
+    let tryCount = 0;
+    let successCount = 0;
+    let failCount = 0;
+    let runSecond = 0;
+    let currentPrice = 15999;
+    let currentColor = '夜空色';
+    let currentCap = '256GB';
+
+    // 默认预购时间：10月16日20:00
+    const preorderDate = new Date();
+    preorderDate.setMonth(9); // 10月
+    preorderDate.setDate(16);
+    preorderDate.setHours(20, 0, 0, 0);
+    targetTimeInput.value = formatDateTimeLocal(preorderDate);
+
+    function formatDateTimeLocal(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth()+1).padStart(2,'0');
+        const d = String(date.getDate()).padStart(2,'0');
+        const h = String(date.getHours()).padStart(2,'0');
+        const min = String(date.getMinutes()).padStart(2,'0');
+        return `${y}-${m}-${d}T${h}:${min}`;
     }
-    window.scrollTo(0, 0);
-  }
-  window.addEventListener('hashchange', go);
-  go();
 
-  $('back-btn').addEventListener('click', function(){ location.hash = '#/'; });
-
-  /* ---- Toast ---- */
-  var toastTimer = null;
-  function toast(msg){
-    var t = $('toast');
-    t.textContent = msg;
-    t.hidden = false;
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function(){ t.hidden = true; }, 2200);
-  }
-
-  /* ---- 复制微信号 ---- */
-  var copyBtn = $('copy-btn');
-  copyBtn.addEventListener('click', function(){
-    var id = $('wechat-id').textContent;
-    function done(){ toast('微信号已复制：' + id); }
-    if (navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(id).then(done, function(){
-        fallbackCopy(id); done();
-      });
-    } else { fallbackCopy(id); done(); }
-  });
-  function fallbackCopy(text){
-    var ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); } catch(e){}
-    ta.remove();
-  }
-
-  /* ---- 转盘 ---- */
-  var SEGS = [
-    {t:'特等奖', n:'小米汽车'},
-    {t:'幸运奖', n:'谢谢参与'},
-    {t:'一等奖', n:'iPhone Duo'},
-    {t:'幸运奖', n:'谢谢参与'},
-    {t:'二等奖', n:'iPhone 18 Pro Max'},
-    {t:'幸运奖', n:'谢谢参与'},
-    {t:'三等奖', n:'iPhone 18 Pro'},
-    {t:'幸运奖', n:'谢谢参与'}
-  ];
-  var rotor = $('rotor');
-  var spinBtn = $('spin-btn');
-  var chanceNote = $('chance-note');
-  var spinning = false;
-  var used = false;
-  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var SPIN_MS = reducedMotion ? 300 : 4700;
-
-  spinBtn.addEventListener('click', function(){
-    if (spinning || used) return;
-    spinning = true;
-    spinBtn.disabled = true;
-    spinBtn.textContent = '转盘中…';
-
-    var idx = Math.floor(Math.random() * SEGS.length);
-    var deg = 360 * 5 + (360 - (idx * 45 + 22.5));
-    rotor.style.transition = 'transform ' + (SPIN_MS / 1000) + 's cubic-bezier(.12,.8,.25,1)';
-    rotor.style.transform = 'rotate(' + deg + 'deg)';
-
-    setTimeout(function(){
-      spinning = false;
-      used = true;
-      spinBtn.textContent = '今日机会已用';
-      spinBtn.classList.add('disabled');
-      chanceNote.textContent = '抽奖机会已使用，感谢参与';
-      showResult(SEGS[idx]);
-    }, SPIN_MS + 150);
-  });
-
-  /* ---- 结果弹窗 ---- */
-  var modal = $('result-modal');
-  var GIFT_ICON = '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="8" width="17" height="4.6" rx="1.2"/><path d="M12 8v12.5M5 12.6V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7.4"/><path d="M12 8c-2.1 0-4.6-1.6-3.6-4.1.9-2.3 4.6-.4 3.6 4.1zM12 8c2.1 0 4.6-1.6 3.6-4.1-.9-2.3-4.6-.4-3.6 4.1z"/></svg>';
-  var STAR_ICON = '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2 4.9 5.3.5-4 3.6 1.2 5.2L12 14.9l-4.5 2.8 1.2-5.2-4-3.6 5.3-.5z"/><path d="M12 3.5v4M12 16.5v4"/></svg>';
-
-  function showResult(seg){
-    var icon = $('modal-icon'), title = $('modal-title'), prize = $('modal-prize'),
-        desc = $('modal-desc'), contact = $('modal-contact');
-    var of = $('order-form');
-    if (seg.t === '幸运奖'){
-      icon.innerHTML = STAR_ICON;
-      title.textContent = '很遗憾，未中奖';
-      prize.textContent = '谢谢参与';
-      desc.textContent = '这次差一点点，感谢你的参与，祝你双十一购物愉快～';
-      contact.hidden = true;
-      if(of) of.hidden = true;
-    } else {
-      icon.innerHTML = GIFT_ICON;
-      title.textContent = '恭喜中奖！';
-      prize.textContent = seg.t + ' · ' + seg.n;
-      desc.textContent = '你抽中了「' + seg.n + '」，请填写收货信息完成登记';
-      contact.hidden = false;
-      if(of) of.hidden = false;
+    // 系统时间
+    function updateSysTime() {
+        sysTime.textContent = new Date().toLocaleTimeString('zh-CN');
     }
-    modal.hidden = false;
-  }
+    setInterval(updateSysTime, 1000);
+    updateSysTime();
 
-  $('modal-close').addEventListener('click', function(){ modal.hidden = true; });
-  modal.addEventListener('click', function(e){ if (e.target === modal) modal.hidden = true; });
-  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !modal.hidden) modal.hidden = true; });
-
-  /* ===== 中奖订单：填写地址 + 按IP查询 ===== */
-  var ORDER_KEY = 'hl95_orders_v1';
-  var IP_KEY = 'hl95_myip_v1';
-  function getOrders(){ try{ return JSON.parse(localStorage.getItem(ORDER_KEY)) || []; }catch(e){ return []; } }
-  function saveOrders(list){ localStorage.setItem(ORDER_KEY, JSON.stringify(list)); }
-  var myIP = localStorage.getItem(IP_KEY) || '';
-  try{
-    fetch('https://api.ipify.org?format=json').then(function(r){ return r.json(); })
-      .then(function(d){ if(d && d.ip){ myIP = d.ip; localStorage.setItem(IP_KEY, myIP); } })
-      .catch(function(){});
-  }catch(e){}
-  function pad(n){ return (n<10?'0':'')+n; }
-  function genOrderNo(){
-    var d = new Date();
-    return 'HL' + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate())
-      + pad(d.getHours()) + pad(d.getMinutes()) + pad(d.getSeconds())
-      + Math.floor(100+Math.random()*900);
-  }
-  function curTimeStr(){
-    var d = new Date();
-    return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes());
-  }
-  function validPhone(s){ return /^1[3-9]\d{9}$/.test(s.replace(/\s/g,'')); }
-
-  $('order-submit').addEventListener('click', function(){
-    var prizeText = $('modal-prize').textContent || '';
-    var titleText = $('modal-title').textContent || '';
-    if(prizeText.indexOf('谢谢参与') !== -1 || titleText.indexOf('很遗憾') !== -1){
-      toast('未中奖，无法填写收货地址'); return;
+    // 倒计时
+    function updateCountdown() {
+        const target = new Date(targetTimeInput.value);
+        const now = new Date();
+        const diff = target - now;
+        if (diff <= 0) {
+            cdDay.textContent = '00';
+            cdHour.textContent = '00';
+            cdMinute.textContent = '00';
+            cdSecond.textContent = '00';
+            return;
+        }
+        const day = Math.floor(diff / (1000*60*60*24));
+        const hour = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+        const minute = Math.floor((diff % (1000*60*60)) / (1000*60));
+        const second = Math.floor((diff % (1000*60)) / 1000);
+        cdDay.textContent = String(day).padStart(2,'0');
+        cdHour.textContent = String(hour).padStart(2,'0');
+        cdMinute.textContent = String(minute).padStart(2,'0');
+        cdSecond.textContent = String(second).padStart(2,'0');
     }
-    var name = $('of-name').value.trim();
-    var phone = $('of-phone').value.trim();
-    var addr = $('of-addr').value.trim();
-    if(!name){ toast('请填写收货人姓名'); return; }
-    if(!validPhone(phone)){ toast('请填写正确的11位手机号'); return; }
-    if(addr.length < 6){ toast('请填写完整收货地址'); return; }
-    var win = $('modal-prize').textContent;
-    var order = { orderNo: genOrderNo(), ip: myIP, prize: win, name: name, phone: phone, address: addr, time: curTimeStr() };
-    var list = getOrders(); list.push(order); saveOrders(list);
-    $('order-form').innerHTML =
-      '<div style="text-align:center;padding:6px 0">'
-      + '<div style="font-size:16px;font-weight:700;color:var(--gold-deep)">订单提交成功</div>'
-      + '<p style="font-size:13px;color:var(--cream-70);margin-top:8px">订单号：<b style="color:var(--gold-deep)">' + order.orderNo + '</b></p>'
-      + '<p style="font-size:12px;color:var(--cream-70);margin-top:4px">奖品将在活动结束后15个工作日内寄出</p>'
-      + '</div>';
-    toast('提交成功，订单号：' + order.orderNo);
-  });
+    countdownTimer = setInterval(updateCountdown, 1000);
+    updateCountdown();
 
-  var qModal = $('query-modal');
-  function openQuery(){
-    var ipEl = $('my-ip'); if(ipEl) ipEl.textContent = myIP || '获取中…';
-    $('query-ip').value = myIP;
-    $('query-result').innerHTML = '';
-    qModal.hidden = false;
-  }
-  function bindQueryOpen(id){ $(id).addEventListener('click', openQuery); }
-  bindQueryOpen('nav-query-btn');
-  bindQueryOpen('contact-query-btn');
-  $('query-close').addEventListener('click', function(){ qModal.hidden = true; });
-  qModal.addEventListener('click', function(e){ if(e.target === qModal) qModal.hidden = true; });
+    // 视图切换
+    document.querySelectorAll('.view-toggle button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if (btn.dataset.view === 'expand') {
+                phonePreview.classList.add('expanded');
+            } else {
+                phonePreview.classList.remove('expanded');
+            }
+        });
+    });
 
-  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  $('query-do').addEventListener('click', function(){
-    var kw = $('query-ip').value.trim();
-    if(!kw){ toast('请输入订单号 或 IP 地址'); return; }
-    var list = getOrders().filter(function(o){ return o.orderNo === kw || o.ip === kw; });
-    var box = $('query-result');
-    if(list.length === 0){ box.innerHTML = '<div class="query-empty">未查询到该IP的订单</div>'; return; }
-    var html = '';
-    for(var i=list.length-1; i>=0; i--){
-      var o = list[i];
-      html += '<div class="query-item">'
-        + '<div><b>订单号：</b>' + esc(o.orderNo) + ' <span class="iptag">' + esc(o.ip) + '</span></div>'
-        + '<div><b>奖品：</b>' + esc(o.prize) + '</div>'
-        + '<div><b>收货人：</b>' + esc(o.name) + '　<b>电话：</b>' + esc(o.phone) + '</div>'
-        + '<div><b>地址：</b>' + esc(o.address) + '</div>'
-        + '<div style="color:var(--cream-50);font-size:12px;margin-top:4px">' + esc(o.time) + '</div>'
-        + '</div>';
+    // 颜色切换
+    document.querySelectorAll('.color-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const color = btn.dataset.color;
+            currentColor = btn.dataset.name;
+            colorName.textContent = currentColor;
+            phonePreview.className = 'fold-phone ' + (color === 'starlight' ? 'white' : '') + (phonePreview.classList.contains('expanded') ? ' expanded' : '');
+            addLog(`已切换颜色：${currentColor}`, 'info');
+        });
+    });
+
+    // 容量切换
+    document.querySelectorAll('.cap-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.cap-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentPrice = parseInt(btn.dataset.price);
+            currentCap = btn.dataset.cap + 'GB';
+            basePrice.textContent = currentPrice.toLocaleString();
+            addLog(`已切换容量：${currentCap}`, 'info');
+        });
+    });
+
+    // 添加日志
+    function addLog(text, type = '') {
+        const time = new Date().toLocaleTimeString('zh-CN');
+        const div = document.createElement('div');
+        div.className = 'log-line ' + type;
+        div.textContent = `[${time}] ${text}`;
+        logBox.appendChild(div);
+        logBox.scrollTop = logBox.scrollHeight;
     }
-    box.innerHTML = html;
-  });
-  $('query-ip').addEventListener('keydown', function(e){ if(e.key === 'Enter'){ $('query-do').click(); } });
 
-})();
+    // 模拟日志
+    const mockLogs = [
+        { text: '正在检测库存状态...', type: '' },
+        { text: '请求接口：/api/iphone-duo/stock/check', type: 'info' },
+        { text: '当前库存：暂无货，持续监控中', type: 'warning' },
+        { text: '发送第 N 次库存查询请求', type: '' },
+        { text: '响应延迟 86ms，状态正常', type: '' },
+        { text: '检测到库存变动！准备提交订单', type: 'warning' },
+        { text: '自动填充收货地址与支付方式', type: 'info' },
+        { text: '订单提交中...', type: '' },
+        { text: '抢购失败：库存不足', type: 'error' },
+        { text: '等待 300ms 后重试', type: '' },
+        { text: '排队中，当前位次 1284', type: 'warning' },
+        { text: '验证码校验通过', type: 'success' },
+        { text: '正在锁定库存...', type: 'info' }
+    ];
+
+    // 显示成功弹窗
+    function showSuccessModal() {
+        const no = 'DH' + Math.floor(Math.random()*1000000000000);
+        orderNo.textContent = no;
+        orderPrice.textContent = '¥' + currentPrice.toLocaleString();
+        orderProduct.textContent = `iPhone Duo ${currentCap} ${currentColor}`;
+        
+        let paySec = 15 * 60;
+        clearInterval(payTimer);
+        payTimer = setInterval(() => {
+            paySec--;
+            const m = String(Math.floor(paySec / 60)).padStart(2, '0');
+            const s = String(paySec % 60).padStart(2, '0');
+            payCountdown.textContent = `${m}:${s}`;
+            if (paySec <= 0) clearInterval(payTimer);
+        }, 1000);
+
+        successModal.classList.add('show');
+    }
+
+    closeModal.addEventListener('click', () => {
+        successModal.classList.remove('show');
+        clearInterval(payTimer);
+    });
+
+    // 开始
+    startBtn.addEventListener('click', () => {
+        if (isRunning) return;
+        isRunning = true;
+        tryCount = 0;
+        successCount = 0;
+        failCount = 0;
+        runSecond = 0;
+
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        runMode.disabled = true;
+        targetTimeInput.disabled = true;
+
+        statusBadge.className = 'status-badge running';
+        statusBadge.innerHTML = '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;margin-right:6px;animation:pulse 1s infinite;"></span> 运行中';
+
+        addLog('===== 抢购任务启动 =====', 'success');
+        addLog(`模式：${runMode.value === 'timing' ? '定时启动' : '立即运行'}`, 'info');
+        addLog(`并发线程：${document.getElementById('threadCount').value}`, 'info');
+        addLog(`重试间隔：${document.getElementById('retryInterval').value}ms`, 'info');
+
+        // 运行时长
+        runTimer = setInterval(() => {
+            runSecond++;
+            runTimeEl.textContent = runSecond + 's';
+        }, 1000);
+
+        // 模拟日志
+        logTimer = setInterval(() => {
+            const log = mockLogs[Math.floor(Math.random() * mockLogs.length)];
+            let text = log.text;
+            if (text.includes('第 N 次')) {
+                text = text.replace('N', tryCount + 1);
+            }
+            addLog(text, log.type);
+            
+            tryCount++;
+            tryCountEl.textContent = tryCount;
+
+            // 随机失败
+            if (Math.random() < 0.4) {
+                failCount++;
+                failCountEl.textContent = failCount;
+            }
+
+            // 小概率成功
+            if (Math.random() < 0.012) {
+                successCount++;
+                successCountEl.textContent = successCount;
+                addLog('✅ 抢购成功！订单已生成，请尽快完成支付', 'success');
+                addLog('订单号：' + orderNo, 'success');
+                showSuccessModal();
+            }
+        }, 600);
+    });
+
+    // 停止
+    stopBtn.addEventListener('click', () => {
+        if (!isRunning) return;
+        isRunning = false;
+
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        runMode.disabled = false;
+        targetTimeInput.disabled = false;
+
+        statusBadge.className = 'status-badge waiting';
+        statusBadge.innerHTML = '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#fbbf24;margin-right:6px;"></span> 已停止';
+
+        clearInterval(runTimer);
+        clearInterval(logTimer);
+        addLog('任务已手动停止', 'warning');
+    });
+
+    // 重置
+    resetBtn.addEventListener('click', () => {
+        stopBtn.click();
+        tryCount = 0;
+        successCount = 0;
+        failCount = 0;
+        runSecond = 0;
+        tryCountEl.textContent = '0';
+        successCountEl.textContent = '0';
+        failCountEl.textContent = '0';
+        runTimeEl.textContent = '0s';
+        addLog('数据已重置', 'info');
+    });
+
+    // 清空日志
+    clearLog.addEventListener('click', () => {
+        logBox.innerHTML = '';
+        addLog('日志已清空', 'info');
+    });
 </script>
+
 </body>
 </html>
